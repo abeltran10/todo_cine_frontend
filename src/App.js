@@ -22,6 +22,7 @@ const App = () => {
 
   return (
     <div>
+      <h1 className='text-info text-center'>MOVIE DATABASE</h1>
       <LoginForm login={login} />
     </div>
   );
