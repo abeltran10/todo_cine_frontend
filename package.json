@@ -23,6 +23,7 @@
     "build:ui": "npm run build --prod && git add . && git commit -m build && git push"
   },
   "proxy": "http://localhost:8081",
+  "homepage": "/",
   "eslintConfig": {
     "extends": [
       "react-app",
