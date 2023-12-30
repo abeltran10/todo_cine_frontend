@@ -1,26 +1,23 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Accordion from 'react-bootstrap/Accordion';
-import  AccordionItem  from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
-const Movie = ({ movie }) => {
-    
+const Movie = ({movie}) => {
+  
+  const img = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+
   return (
-    <Container className="rounded p-3 mb-2 bg-light text-dark" fluid="md">
-      <Row>
-        <Accordion defaultActiveKey="0">
-          <Accordion.Item eventKey={movie.id}>
-          <Accordion.Header>{movie.title} {movie.release_date.substring(0, movie.release_date.indexOf('-'))}</Accordion.Header>
-          <Accordion.Body>
-              <h3>{movie.title}</h3>
-          </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
-     </Row>
-    </Container>
-      
+      <Card style={{ width: '18rem' }}>
+        <Card.Img variant="top" src={img} />
+          <Card.Body>
+            <Card.Title>{movie.title} {movie.release_date.substring(0, movie.release_date.indexOf("-"))}</Card.Title>
+            <Card.Text>
+              {movie.overview}
+            </Card.Text>
+            <Button variant="primary">Detalle</Button>
+          </Card.Body>
+      </Card>      
   )
 }
 

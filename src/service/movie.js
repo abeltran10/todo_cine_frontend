@@ -14,13 +14,13 @@ const getAll = () => {
   return response.then(response => response.data)
 }
 
-const getByName = async (name) => {
+const getByName = async (name, page) => {
     console.log(token)
     const config = {
         headers: { Authorization: token }
       }
 
-    const response =  await axios.get(`${baseUrl}/${name}`, config)
+    const response =  await axios.get(`${baseUrl}/${name}?page=${page}`, config)
     return response.data
     
 }

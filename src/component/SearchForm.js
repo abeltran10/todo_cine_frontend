@@ -12,7 +12,7 @@ const SearchForm = ({ search }) => {
     const handleSearch = async (event) => {
         event.preventDefault()
     
-        await search(moviename)
+        await search(moviename, 1)
     
         setMoviename('')
     }
