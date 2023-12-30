@@ -20,11 +20,21 @@ const App = () => {
   const [ errorMessage, setErrorMessage ] = useState(null)
   
   useEffect(() => {
-    const loggedUserMovie = window.localStorage.getItem('loggedUserMovie')
-    if (loggedUserMovie) {
-      const usuario = JSON.parse(loggedUserMovie)
-      setUser(usuario)
-
+    const loggedMovieToken = window.localStorage.getItem('movieToken')
+    if (loggedMovieToken) {
+        userService.setToken(loggedMovieToken)
+        const loggedUserMovie = window.localStorage.getItem('loggedUserMovie')
+        
+        const response = userService.getByName(JSON.parse(loggedUserMovie).username)
+        response.then(response => {
+          if (response instanceof Error) {
+            setErrorMessage('Credentials out of date')
+            setTimeout(() => { setErrorMessage(null) }, 5000)
+          } else {
+            setUser(response)
+          }
+        })
+        
     }
   }, [])
 
@@ -37,10 +47,18 @@ const App = () => {
       window.localStorage.setItem('movieToken', token)
       userService.setToken(token)
 
-      const usuario = await userService.getByName(username)
-      window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
-      setUser(usuario)
-    
+      const response = userService.getByName(username)
+
+      response.then(response => {
+        if (response instanceof Error) {
+          setErrorMessage('Credentials out of date')
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+        } else {
+          setUser(response)
+          window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+
+        }
+      })
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -50,10 +68,13 @@ const App = () => {
 
   const search = async (mov) => {
     try {
+
       console.log(mov)
       movieService.setToken(window.localStorage.getItem('movieToken'))
+      
       const peli = await movieService.getByName(mov)
       setMovie(peli)
+    
     }
      catch (exception) {
       setErrorMessage('Error in search')

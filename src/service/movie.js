@@ -20,9 +20,9 @@ const getByName = async (name) => {
         headers: { Authorization: token }
       }
 
-    const response = await axios.get(`${baseUrl}/${name}`, config)
-
+    const response =  await axios.get(`${baseUrl}/${name}`, config)
     return response.data
+    
 }
 
 const create = async newObject => {

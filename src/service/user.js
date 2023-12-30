@@ -8,14 +8,15 @@ const setToken = newToken => {
   token = newToken
 }
 
-const getByName = async (name) => {
+const getByName = (name) => {
     const config = {
         headers: { Authorization: token }
       }
 
     console.log(token)
-    const response = await axios.get(`${baseUrl}/${name}`, config)
-    return response.data
+    const response = axios.get(`${baseUrl}/${name}`, config)
+    return response.then(response => response.data).catch(ex => new Error(ex))
+    
 }
 
 
