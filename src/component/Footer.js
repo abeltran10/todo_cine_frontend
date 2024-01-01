@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
 
 import Pagination from 'react-bootstrap/Pagination'
-import movie from '../service/movie'
+import  Container  from 'react-bootstrap/Container'
+import  Row  from 'react-bootstrap/Row'
+import  Col  from 'react-bootstrap/Col'
+
 
 const Footer = ({search, textSearch, pageNumbers}) => {
     const [page, setPage] = useState(0)
@@ -77,20 +80,24 @@ const Footer = ({search, textSearch, pageNumbers}) => {
 
     const handleLast = () => {
       setPage(paginationItems.length - 1)
-      setActivePage(paginationItems.length)
+      handleShowNewPage(paginationItems.length)
     }
     
     return (
-      <div>
-        <Pagination>
-          <Pagination.First onClick={() => handleFirst()} />
-          <Pagination.Prev onClick={() => handlePrev()} /> 
-          {showPaginationNumbers()}
-          <Pagination.Next  onClick={() => handleNext()} />
-          <Pagination.Last  onClick={() => handleLast()} />
-        </Pagination>    
+      <Container>
+        <Row className="justify-content-md-center">
+          <Col>
+            <Pagination>
+              <Pagination.First onClick={() => handleFirst()} />
+              <Pagination.Prev onClick={() => handlePrev()} /> 
+              {showPaginationNumbers()}
+              <Pagination.Next  onClick={() => handleNext()} />
+              <Pagination.Last  onClick={() => handleLast()} />
+            </Pagination>
+          </Col>    
+        </Row>         
         <br />
-      </div>
+      </Container>
     )
     
 }
