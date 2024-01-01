@@ -84,7 +84,7 @@ const Footer = ({search, textSearch, pageNumbers}) => {
     }
     
     return (
-      <Container>
+      <Container className='p-3 mb-2' fluid="md">
         <Row className="justify-content-md-center">
           <Col>
             <Pagination>

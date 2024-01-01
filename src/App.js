@@ -34,10 +34,7 @@ const App = () => {
       
       const response = userService.getByName(user.username)
       response.then(response => {
-        if (response instanceof Error) {
-          setErrorMessage('No se ha podido iniciar sesión')
-          setTimeout(() => { setErrorMessage(null) }, 5000)
-        } else { 
+        if (!(response instanceof Error)) {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
         }
