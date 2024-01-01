@@ -26,7 +26,7 @@ const App = () => {
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
- /* useEffect(() => {
+  useEffect(() => {
     const loggedUserMovie = window.localStorage.getItem('loggedUserMovie')
 
     if (loggedUserMovie) {
@@ -44,11 +44,7 @@ const App = () => {
 
       }) 
     }
-
-
-
-  }, []) */
-
+ }, []) 
 
   const login = async (username, password) => {
     try {
@@ -80,6 +76,8 @@ const App = () => {
 
       window.localStorage.removeItem('loggedUserToken')
       window.localStorage.removeItem('loggedUserMovie')
+
+      setUser(null)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
       setTimeout(() => { setErrorMessage(null) }, 5000)
