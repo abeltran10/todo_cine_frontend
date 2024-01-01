@@ -1,8 +1,17 @@
 import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
+import Button from 'react-bootstrap/Button'
+
+const NavigationBar = ({username, logout}) => {
 
 
-const NavigationBar = ({username}) => {
+  const handleLogout = async (event) => {
+    event.preventDefault()
+
+    await logout()
+  } 
+
+
     return (
         <Navbar className="bg-body-tertiary">
           <Container>
@@ -10,7 +19,7 @@ const NavigationBar = ({username}) => {
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text>
-                <a href="/app/logout">Logout</a>
+                <Button variant="link" onClick={handleLogout}>Logout</Button>
               </Navbar.Text>
             </Navbar.Collapse>
           </Container>

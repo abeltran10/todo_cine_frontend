@@ -26,7 +26,7 @@ const App = () => {
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
-  /*useEffect(() => {
+ /* useEffect(() => {
     const loggedUserMovie = window.localStorage.getItem('loggedUserMovie')
 
     if (loggedUserMovie) {
@@ -47,7 +47,7 @@ const App = () => {
 
 
 
-  }, [])*/
+  }, []) */
 
 
   const login = async (username, password) => {
@@ -74,10 +74,22 @@ const App = () => {
 
   }
 
+  const logout = async () => {
+    try {
+      await loginService.logout()
+
+      window.localStorage.removeItem('loggedUserToken')
+      window.localStorage.removeItem('loggedUserMovie')
+    } catch(exception) {
+      setErrorMessage('Error al abandonar la sesión')
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+  }
+
   const search = async (mov, page) => {
     try {
       setTextSearch(mov)
-      
 
       const pelis = await movieService.getByName(mov, page)
       setMovie(pelis)
@@ -126,7 +138,7 @@ const App = () => {
 
   return (
     <div>
-      {(user !== null) ? <NavigationBar username= {user.username} /> : <></>}
+      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} /> : <></>}
       <h1 className='text-info text-center'>MOVIE DATABASE</h1>
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       { (user === null) ?
