@@ -26,6 +26,29 @@ const App = () => {
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
+  /*useEffect(() => {
+    const loggedUserMovie = window.localStorage.getItem('loggedUserMovie')
+
+    if (loggedUserMovie) {
+      const user = JSON.parse(loggedUserMovie)
+      
+      const response = userService.getByName(user.username)
+      response.then(response => {
+        if (response instanceof Error) {
+          setErrorMessage('No se ha podido iniciar sesión')
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+        } else { 
+          setUser(response)
+          window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+        }
+
+      }) 
+    }
+
+
+
+  }, [])*/
+
 
   const login = async (username, password) => {
     try {
