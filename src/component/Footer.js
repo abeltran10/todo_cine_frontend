@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
 
 import Pagination from 'react-bootstrap/Pagination'
+import movie from '../service/movie'
 
 const Footer = ({search, textSearch, pageNumbers}) => {
     const [page, setPage] = useState(0)
     const [activePage, setActivePage] = useState(1)
     
-    console.log(activePage)
     let paginationItems = [];
     if (pageNumbers) {
       for (let number = 1; number <= pageNumbers; number++) 
@@ -53,22 +53,31 @@ const Footer = ({search, textSearch, pageNumbers}) => {
 
    const handleFirst = () => {
       setPage(0)
+      handleShowNewPage(1)
       
     }
 
     const handlePrev = () => {
-      if (page - 1 >= 0)
-        setPage(page - 1)    
+      if (page - 1 >= 0) {
+        setPage(page - 1)
+      
+        handleShowNewPage(activePage - 1)
+      }
 
     }
 
     const handleNext = () => {
-      if (page + 1 < paginationItems.length)
+      if (page + 1 < paginationItems.length) {
         setPage(page + 1)
+
+        handleShowNewPage(activePage + 1)
+      }
+        
       }
 
     const handleLast = () => {
       setPage(paginationItems.length - 1)
+      setActivePage(paginationItems.length)
     }
     
     return (
