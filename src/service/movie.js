@@ -1,12 +1,6 @@
 import axios from 'axios'
 
 const baseUrl = '/app/movie'
-
-let token = ''
-
-const setToken = newToken => {
-  token = newToken
-}
     
 const getAll = () => {
   const response = axios.get(baseUrl)
@@ -15,9 +9,8 @@ const getAll = () => {
 }
 
 const getByName = async (name, page) => {
-    console.log(token)
     const config = {
-        headers: { Authorization: token }
+        headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
       }
 
     const response =  await axios.get(`${baseUrl}/${name}?page=${page}`, config)
@@ -27,7 +20,7 @@ const getByName = async (name, page) => {
 
 const create = async newObject => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
   }
 
   const response = await axios.post(baseUrl, newObject, config)
@@ -42,10 +35,10 @@ const update = async (id, newObject) => {
 
 const remove = async (id) => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
   }
 
   await axios.delete(`${baseUrl}/${id}`, config)
 }
 
-export default { setToken, getAll, getByName, create, update, remove }
+export default { getAll, getByName, create, update, remove }

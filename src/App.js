@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react'
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import CardGroup from 'react-bootstrap/CardGroup';
+import CardGroup from 'react-bootstrap/CardGroup'
+import Card  from 'react-bootstrap/Card'
 
 import LoginForm from './component/LoginForm'
 import Notification from './component/Notification'
 import SearchForm from './component/SearchForm'
 import Movie from './component/Movie'
 import Footer from './component/Footer'
+import NavigationBar from './component/NavigationBar'
 
 
 import loginService from './service/login'
 import movieService from './service/movie'
 import userService from './service/user'
+
 
 
 const App = () => {
@@ -22,40 +25,37 @@ const App = () => {
   const [ textSearch, setTextSearch ] = useState('')
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
-  
-  useEffect(() => {
-    const loggedMovieToken = window.localStorage.getItem('movieToken')
-    if (loggedMovieToken) {
-        userService.setToken(loggedMovieToken)
-        const loggedUserMovie = window.localStorage.getItem('loggedUserMovie')
-        
-        const response = userService.getByName(JSON.parse(loggedUserMovie).username)
-        response.then(response => {
-          if (response instanceof Error) {
-            setErrorMessage('Credentials out of date')
-            setTimeout(() => { setErrorMessage(null) }, 5000)
-          } else {
-            setUser(response)
-          }
-        })
-        
-    }
-  }, [])
 
+  useEffect(() => {
+    const loggedUserMovie = window.localStorage.getItem('loggedUserMovie')
+
+    if (loggedUserMovie) {
+      const user = JSON.parse(loggedUserMovie)
+      
+      const response = userService.getByName(user.username)
+      response.then(response => {
+        if (response instanceof Error) {
+          setErrorMessage('No se ha podido iniciar sesión')
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+        } else { 
+          setUser(response)
+          window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+        }
+
+      }) 
+    }
+ }, []) 
 
   const login = async (username, password) => {
     try {
       const headers = await loginService.login({ username, password })
-      const token = headers.getAuthorization()
-      
-      window.localStorage.setItem('movieToken', token)
-      userService.setToken(token)
-
+      window.localStorage.setItem('loggedUserToken', headers.getAuthorization())
+     
       const response = userService.getByName(username)
 
       response.then(response => {
         if (response instanceof Error) {
-          setErrorMessage('Credentials out of date')
+          setErrorMessage('No se ha podido iniciar sesión')
           setTimeout(() => { setErrorMessage(null) }, 5000)
         } else {
           setUser(response)
@@ -64,24 +64,37 @@ const App = () => {
         }
       })
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage('Usuario o contraseña no validos')
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }
 
   }
 
+  const logout = async () => {
+    try {
+      await loginService.logout()
+
+      window.localStorage.removeItem('loggedUserToken')
+      window.localStorage.removeItem('loggedUserMovie')
+
+      setUser(null)
+    } catch(exception) {
+      setErrorMessage('Error al abandonar la sesión')
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+  }
+
   const search = async (mov, page) => {
     try {
       setTextSearch(mov)
-      console.log(mov)
-      movieService.setToken(window.localStorage.getItem('movieToken'))
-      
+
       const pelis = await movieService.getByName(mov, page)
       setMovie(pelis)
     
     }
      catch (exception) {
-      setErrorMessage('Error in search')
+      setErrorMessage('Error en la busqueda')
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }   
   }
@@ -105,11 +118,14 @@ const App = () => {
       if ( length - i === 1) {
           row.push(<Row key={length - 1 }><CardGroup>
             <Movie key={movie.results[length - 1].id} movie={movie.results[length - 1]} />
+            <Card></Card>
+            <Card></Card>
             </CardGroup></Row>)
       } else if (length - i === 2)  {
         row.push(<Row key={length}><CardGroup>
             <Movie key={movie.results[length - 2].id} movie={movie.results[length - 2]} />
             <Movie key={movie.results[length - 1].id} movie={movie.results[length - 1]} />
+            <Card></Card>
             </CardGroup></Row>)
       }
     }
@@ -120,18 +136,19 @@ const App = () => {
 
   return (
     <div>
+      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} /> : <></>}
       <h1 className='text-info text-center'>MOVIE DATABASE</h1>
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       { (user === null) ?
           <LoginForm login={login} /> :
-         <div>
-          <div>
-            <SearchForm search={search} />
+         <div>            
+            <div>
+              <SearchForm search={search} />
                 <Container className='p-3 mb-2' fluid="md">
                   {showGridMovies(movie).map(r => r)}
                 </Container>
           </div>
-          <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pages={movie.total_pages} /> : <></>}</div>
+          <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /> : <></>}</div>
          </div> 
       }
     </div>

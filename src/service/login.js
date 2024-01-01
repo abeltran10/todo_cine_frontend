@@ -6,4 +6,12 @@ const login = async credentials => {
   return response.headers
 }
 
-export default { login }
+const logout = async () => {
+  const config = {
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+  }
+
+  await axios.get('/app/logout', config)
+}
+
+export default { login, logout }

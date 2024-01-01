@@ -1,20 +1,18 @@
 import React from 'react'
 
+import Card from 'react-bootstrap/Card';
+
 const Notification = ({successMessage, errorMessage}) => {
-    const successStyle = {backgroundColor: '#198754', borderRadius: '50rem', color: 'white', textAlign: 'center'}
-    const errorStyle = {backgroundColor: '#dc3545', borderRadius: '50rem', color: 'white', textAlign: 'center'}
     
     if (successMessage === null && errorMessage === null)
         return null
 
-    const style = successMessage !== null ? successStyle : errorStyle
+    const color = successMessage !== null ? 'bg-success' : 'bg-warning'
     
     let message = successMessage !== null ? successMessage : errorMessage
 
     return (
-        <div style={style}>
-            {message}
-        </div>
+        <Card className={color} body>{message}</Card>
     )
 }
 
