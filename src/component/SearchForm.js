@@ -7,14 +7,14 @@ import Col from 'react-bootstrap/Col';
 import React, { useState } from 'react'
 
 const SearchForm = ({ search }) => {
-    const [ moviename, setMoviename ] = useState('')
+    const [ text, setText ] = useState('')
 
     const handleSearch = async (event) => {
         event.preventDefault()
     
-        await search(moviename, 1)
+        await search(text, 1)
     
-        setMoviename('')
+        setText('')
     }
 
     return (
@@ -24,7 +24,7 @@ const SearchForm = ({ search }) => {
                     <Form onSubmit={handleSearch}>
                       <Form.Group className="mb-3" controlId="formGroupSearch">
                         <Form.Label>Busca película</Form.Label>
-                        <Form.Control type="text" value={moviename} name="moviename" onChange={({target}) => setMoviename(target.value)} placeholder="Busca película" />
+                        <Form.Control type="text" value={text} name="moviename" onChange={({target}) => setText(target.value)} placeholder="Busca película" />
                       </Form.Group>
                       <Button variant="primary" type="submit">
                           Busca

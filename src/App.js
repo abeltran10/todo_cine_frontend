@@ -34,10 +34,7 @@ const App = () => {
       
       const response = userService.getByName(user.username)
       response.then(response => {
-        if (response instanceof Error) {
-          setErrorMessage('No se ha podido iniciar sesión')
-          setTimeout(() => { setErrorMessage(null) }, 5000)
-        } else { 
+        if (!(response instanceof Error)) {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
         }
@@ -85,13 +82,11 @@ const App = () => {
     
   }
 
-  const search = async (mov, page) => {
+  const search = async (text, page) => {
     try {
-      setTextSearch(mov)
-
-      const pelis = await movieService.getByName(mov, page)
+      const pelis = await movieService.getByName(text, page)
       setMovie(pelis)
-    
+      setTextSearch(text)
     }
      catch (exception) {
       setErrorMessage('Error en la busqueda')
@@ -104,7 +99,7 @@ const App = () => {
     if (movie !== null) {
       const length = movie.results.length
       let i = 0
-      while (i + 3 < length) {
+      while (i + 3 <= length) {
         row.push(<Row key={i}><CardGroup>
           <Movie key={movie.results[i].id} movie={movie.results[i]} />
           <Movie key={movie.results[i + 1].id} movie={movie.results[i + 1]} />
@@ -145,7 +140,7 @@ const App = () => {
             <div>
               <SearchForm search={search} />
                 <Container className='p-3 mb-2' fluid="md">
-                  {showGridMovies(movie).map(r => r)}
+                  {showGridMovies(movie)}
                 </Container>
           </div>
           <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /> : <></>}</div>

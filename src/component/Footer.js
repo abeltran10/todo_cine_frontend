@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
 
 import Pagination from 'react-bootstrap/Pagination'
-import movie from '../service/movie'
+import  Container  from 'react-bootstrap/Container'
+import  Row  from 'react-bootstrap/Row'
+import  Col  from 'react-bootstrap/Col'
+
 
 const Footer = ({search, textSearch, pageNumbers}) => {
     const [page, setPage] = useState(0)
@@ -17,10 +20,10 @@ const Footer = ({search, textSearch, pageNumbers}) => {
       );
     }
 
-    console.log(paginationItems)
 
     const handleShowNewPage = async (page) => {
       await search(textSearch, page)
+      setPage(page - 1)
       setActivePage(page)
     }
 
@@ -58,7 +61,7 @@ const Footer = ({search, textSearch, pageNumbers}) => {
     }
 
     const handlePrev = () => {
-      if (page - 1 >= 0) {
+      if (page - 1 >= 0) {        
         setPage(page - 1)
       
         handleShowNewPage(activePage - 1)
@@ -77,20 +80,24 @@ const Footer = ({search, textSearch, pageNumbers}) => {
 
     const handleLast = () => {
       setPage(paginationItems.length - 1)
-      setActivePage(paginationItems.length)
+      handleShowNewPage(paginationItems.length)
     }
     
     return (
-      <div>
-        <Pagination>
-          <Pagination.First onClick={() => handleFirst()} />
-          <Pagination.Prev onClick={() => handlePrev()} /> 
-          {showPaginationNumbers()}
-          <Pagination.Next  onClick={() => handleNext()} />
-          <Pagination.Last  onClick={() => handleLast()} />
-        </Pagination>    
+      <Container className='p-3 mb-2' fluid="md">
+        <Row className="justify-content-md-center">
+          <Col>
+            <Pagination>
+              <Pagination.First onClick={() => handleFirst()} />
+              <Pagination.Prev onClick={() => handlePrev()} /> 
+              {showPaginationNumbers()}
+              <Pagination.Next  onClick={() => handleNext()} />
+              <Pagination.Last  onClick={() => handleLast()} />
+            </Pagination>
+          </Col>    
+        </Row>         
         <br />
-      </div>
+      </Container>
     )
     
 }
