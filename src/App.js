@@ -82,13 +82,11 @@ const App = () => {
     
   }
 
-  const search = async (mov, page) => {
+  const search = async (text, page) => {
     try {
-      setTextSearch(mov)
-
-      const pelis = await movieService.getByName(mov, page)
+      const pelis = await movieService.getByName(text, page)
       setMovie(pelis)
-    
+      setTextSearch(text)
     }
      catch (exception) {
       setErrorMessage('Error en la busqueda')
@@ -142,7 +140,7 @@ const App = () => {
             <div>
               <SearchForm search={search} />
                 <Container className='p-3 mb-2' fluid="md">
-                  {showGridMovies(movie).map(r => r)}
+                  {showGridMovies(movie)}
                 </Container>
           </div>
           <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /> : <></>}</div>

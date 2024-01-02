@@ -20,10 +20,10 @@ const Footer = ({search, textSearch, pageNumbers}) => {
       );
     }
 
-    console.log(paginationItems)
 
     const handleShowNewPage = async (page) => {
       await search(textSearch, page)
+      setPage(page - 1)
       setActivePage(page)
     }
 
@@ -61,7 +61,7 @@ const Footer = ({search, textSearch, pageNumbers}) => {
     }
 
     const handlePrev = () => {
-      if (page - 1 >= 0) {
+      if (page - 1 >= 0) {        
         setPage(page - 1)
       
         handleShowNewPage(activePage - 1)
