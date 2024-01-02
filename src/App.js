@@ -99,7 +99,7 @@ const App = () => {
     if (movie !== null) {
       const length = movie.results.length
       let i = 0
-      while (i + 3 < length) {
+      while (i + 3 <= length) {
         row.push(<Row key={i}><CardGroup>
           <Movie key={movie.results[i].id} movie={movie.results[i]} />
           <Movie key={movie.results[i + 1].id} movie={movie.results[i + 1]} />
