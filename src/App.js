@@ -77,6 +77,8 @@ const App = () => {
       window.localStorage.removeItem('loggedUserMovie')
 
       setUser(null)
+      setMovie(null)
+      setMovieDetail(null)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
       setTimeout(() => { setErrorMessage(null) }, 5000)
