@@ -18,8 +18,10 @@ const Movie = ({ movie }) => {
             </Row>
             <Row>
                 <Col> <Image src={img} thumbnail /></Col>
-                <Col>{movie.overview}
-                    <Row><br/><Container><iframe width="420" height="315" src={video} /></Container></Row>  
+                <Col>
+                    <Row>{movie.overview}</Row>
+                    <br/>
+                    <Row><Container><iframe width="420" height="315" src={video} /></Container></Row>  
                 </Col>
             </Row>
 
