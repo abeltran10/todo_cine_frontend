@@ -13,9 +13,17 @@ const getByName = async (name, page) => {
         headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
       }
 
-    const response =  await axios.get(`${baseUrl}/${name}?page=${page}`, config)
+    const response =  await axios.get(`${baseUrl}/name/${name}?page=${page}`, config)
     return response.data
-    
+}
+
+const getMovieById = async (id) => {
+  const config = {
+    headers: {Authorization: window.localStorage.getItem('loggedUserToken')}
+  }
+
+  const response = await axios.get(`${baseUrl}/${id}`, config)
+  return response.data
 }
 
 const create = async newObject => {
@@ -41,4 +49,4 @@ const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`, config)
 }
 
-export default { getAll, getByName, create, update, remove }
+export default { getAll, getByName, getMovieById, create, update, remove }
