@@ -22,8 +22,9 @@
     "eject": "react-scripts eject",
     "build:ui": "npm run build --prod && git add . && git commit -m build && git push"
   },
+  
   "proxy": "http://localhost:8080",
-
+  
   "homepage": ".",
 
   "eslintConfig": {
