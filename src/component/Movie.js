@@ -1,24 +1,24 @@
 import React from 'react'
 
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Image from 'react-bootstrap/Image'
 
-const Movie = ({movie}) => {
-  
-  const img = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+const Movie = ({ movie }) => {
 
-  return (
-      <Card style={{ width: '18rem' }}>
-        <Card.Img variant="top" src={img} />
-          <Card.Body>
-            <Card.Title>{movie.title} {movie.release_date.substring(0, movie.release_date.indexOf("-"))}</Card.Title>
-            <Card.Text>
-              {movie.overview}
-            </Card.Text>
-            <Button variant="primary">Detalle</Button>
-          </Card.Body>
-      </Card>      
-  )
+    const img = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+
+    return (
+        <Container>
+            <h3 className='text-info text-center'>{movie.original_title}</h3>
+            <Row>
+                <Col> <Image src={img} thumbnail /></Col>
+                <Col>{movie.overview}</Col>
+            </Row>
+        </Container>
+    ) 
+
 }
 
 export default Movie

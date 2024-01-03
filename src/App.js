@@ -8,9 +8,10 @@ import Card  from 'react-bootstrap/Card'
 import LoginForm from './component/LoginForm'
 import Notification from './component/Notification'
 import SearchForm from './component/SearchForm'
-import Movie from './component/Movie'
+import MovieCard from './component/MovieCard'
 import Footer from './component/Footer'
 import NavigationBar from './component/NavigationBar'
+import Movie from './component/Movie'
 
 
 import loginService from './service/login'
@@ -22,6 +23,7 @@ import userService from './service/user'
 const App = () => {
   const [ user, setUser ] = useState(null)
   const [ movie, setMovie ] = useState(null)
+  const [ movieDetail, setMovieDetail ] = useState(null)
   const [ textSearch, setTextSearch ] = useState('')
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
@@ -101,9 +103,9 @@ const App = () => {
       let i = 0
       while (i + 3 <= length) {
         row.push(<Row key={i}><CardGroup>
-          <Movie key={movie.results[i].id} movie={movie.results[i]} />
-          <Movie key={movie.results[i + 1].id} movie={movie.results[i + 1]} />
-          <Movie key={movie.results[i + 2].id} movie={movie.results[i + 2]} />
+          <MovieCard key={movie.results[i].id} movie={movie.results[i]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={movie.results[i + 1].id} movie={movie.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={movie.results[i + 2].id} movie={movie.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
           </CardGroup>
         </Row>)
         
@@ -112,14 +114,14 @@ const App = () => {
         
       if ( length - i === 1) {
           row.push(<Row key={length - 1 }><CardGroup>
-            <Movie key={movie.results[length - 1].id} movie={movie.results[length - 1]} />
+            <MovieCard key={movie.results[length - 1].id} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail} />
             <Card></Card>
             <Card></Card>
             </CardGroup></Row>)
       } else if (length - i === 2)  {
         row.push(<Row key={length}><CardGroup>
-            <Movie key={movie.results[length - 2].id} movie={movie.results[length - 2]} />
-            <Movie key={movie.results[length - 1].id} movie={movie.results[length - 1]} />
+            <MovieCard key={movie.results[length - 2].id} movie={movie.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
+            <MovieCard key={movie.results[length - 1].id} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
             <Card></Card>
             </CardGroup></Row>)
       }
@@ -129,13 +131,29 @@ const App = () => {
 
   }
 
+  const loadMovieDetail = async (id) => {
+    
+    try {
+      const peli = await movieService.getMovieById(id)
+
+      setMovieDetail(peli)
+    } catch (exception) {
+      setErrorMessage('Error al cargar el detalle de la película')
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+
+
+  }
+
   return (
     <div>
       {(user !== null) ? <NavigationBar username= {user.username} logout={logout} /> : <></>}
       <h1 className='text-info text-center'>MOVIE DATABASE</h1>
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
-      { (user === null) ?
-          <LoginForm login={login} /> :
+      { (user === null && movieDetail === null) ?
+          <LoginForm login={login} /> : <></>}
+      { (user && movieDetail=== null) ?  
          <div>            
             <div>
               <SearchForm search={search} />
@@ -145,7 +163,9 @@ const App = () => {
           </div>
           <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /> : <></>}</div>
          </div> 
-      }
+       : <></>}
+      {(movieDetail) ? 
+          <Movie movie={movieDetail} /> : <></>}
     </div>
   );
 }
