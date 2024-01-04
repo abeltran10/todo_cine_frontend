@@ -31,11 +31,11 @@ const Movie = ({ movie }) => {
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
                     <br/>
-                    <Row><Container><span className="fw-bold">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
+                    <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
                     <br/>
                     <br/>
-                    <Row><Container><span className="fw-bold">Votos totales:</span> {movie.vote_count}</Container></Row>
-                    <Row><Container><span className="fw-bold">Puntuación:</span> {movie.vote_average}</Container></Row>
+                    <Row><Container><span className="fw-bold fst-italic">Votos totales:</span> {movie.vote_count}</Container></Row>
+                    <Row><Container><span className="fw-bold fst-italic">Puntuación:</span> {movie.vote_average}</Container></Row>
                 </Col>
             </Row>
 
