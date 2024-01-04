@@ -16,15 +16,7 @@ const Movie = ({ movie }) => {
 
     let genresName = ''
 
-    const genres = movie.genres
-
-    for (let i = 0; i < genres.length ; i++) {
-        if (i + 1 === genres.length)
-            genresName = genresName.concat(genres[i].name)
-        else
-            genresName = genresName.concat(`${genres[i].name} | `)
-    }
-
+    
     return (
         <Container>
             <Row>
@@ -39,11 +31,11 @@ const Movie = ({ movie }) => {
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
                     <br/>
-                    <Row><Container>Géneros: {genresName}</Container></Row>
+                    <Row><Container><span className="fw-bold">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
                     <br/>
                     <br/>
-                    <Row><Container>Votos totales: {movie.vote_count}</Container></Row>
-                    <Row><Container>Puntuación: {movie.vote_average}</Container></Row>
+                    <Row><Container><span className="fw-bold">Votos totales:</span> {movie.vote_count}</Container></Row>
+                    <Row><Container><span className="fw-bold">Puntuación:</span> {movie.vote_average}</Container></Row>
                 </Col>
             </Row>
 
