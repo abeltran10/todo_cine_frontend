@@ -7,11 +7,9 @@ import Image from 'react-bootstrap/Image'
 
 const Movie = ({ movie }) => {
 
-    const img = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+    const img = (movie.poster_path) ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : null
     
-    let key = (movie.videos.results.length !== 0) ? movie.videos.results[0].key : null
-
-    const video = `https://www.youtube.com/embed/${key}`
+    let video = (movie.videos.results.length !== 0) ? `https://www.youtube.com/embed/${movie.videos.results[0].key}` : null
 
     return (
         <Container>
@@ -24,7 +22,7 @@ const Movie = ({ movie }) => {
                 <Col>
                     <Row>{movie.overview}</Row>
                     <br/>
-                    <Row>{(key) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row>  
+                    <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row>  
                 </Col>
             </Row>
 
