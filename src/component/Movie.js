@@ -39,7 +39,7 @@ const Movie = ({ movie }) => {
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
                     <br/>
-                    <Row><Container>Generos: {genresName}</Container></Row>
+                    <Row><Container>Géneros: {genresName}</Container></Row>
                     <br/>
                     <br/>
                     <Row><Container>Votos totales: {movie.vote_count}</Container></Row>
