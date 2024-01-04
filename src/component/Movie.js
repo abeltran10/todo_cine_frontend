@@ -9,7 +9,7 @@ const Movie = ({ movie }) => {
 
     const img = (movie.poster_path) ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : null
     
-    let video = (movie.videos.results.length !== 0) ? `https://www.youtube.com/embed/${movie.videos.results[0].key}` : null
+    const video = (movie.videos.results.length !== 0) ? `https://www.youtube.com/embed/${movie.videos.results[0].key}` : null
 
     return (
         <Container>
