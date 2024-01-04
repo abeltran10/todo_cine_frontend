@@ -151,23 +151,30 @@ const App = () => {
   return (
     <div>
       {(user !== null) ? <NavigationBar username= {user.username} logout={logout} /> : <></>}
-      <h1 className='text-info text-center'>MOVIE DATABASE</h1>
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
-      { (user === null && movieDetail === null) ?
-          <LoginForm login={login} /> : <></>}
+      {(user === null) ?  <h1 className='text-info text-center'>TODO CINE</h1> : <></> }
+      { (user === null && movieDetail === null) ? (
+          <div>
+            <LoginForm login={login} />
+          </div>) : <></>}
       { (user && movieDetail=== null) ?  
-         <div>            
+        <div> 
+          <h1 className='text-info text-center'>SEARCH</h1>           
             <div>
               <SearchForm search={search} />
                 <Container className='p-3 mb-2' fluid="md">
                   {showGridMovies(movie)}
                 </Container>
-          </div>
+            </div>
           <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /> : <></>}</div>
-         </div> 
+        </div> 
        : <></>}
       {(movieDetail) ? 
-          <Movie movie={movieDetail} /> : <></>}
+          <div>
+            <div><h1 className='text-info text-center'>DETALLE</h1></div>
+            <Movie movie={movieDetail} />
+          </div>
+           : <></>}
     </div>
   );
 }
