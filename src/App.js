@@ -143,14 +143,23 @@ const App = () => {
       setErrorMessage('Error al cargar el detalle de la película')
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }
+  }
+
+  const loadCartelera = async (region) => {
+    try {
+      const pelis = await movieService.getMoviesPlayingNowByRegion("ES")
+
+      setMovie(pelis)
+    } catch (exception) {
+      setErrorMessage('No hay películas para la región seleccionada')
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
     
-
-
   }
 
   return (
     <div>
-      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} /> : <></>}
+      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} loadCartelera={loadCartelera}/> : <></>}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       {(user === null) ?  <h1 className='text-info text-center'>TODO CINE</h1> : <></> }
       { (user === null && movieDetail === null) ? (
@@ -159,7 +168,7 @@ const App = () => {
           </div>) : <></>}
       { (user && movieDetail=== null) ?  
         <div> 
-          <h1 className='text-info text-center'>SEARCH</h1>           
+          <h1 className='text-info text-center'>PELÍCULAS</h1>           
             <div>
               <SearchForm search={search} />
                 <Container className='p-3 mb-2' fluid="md">
