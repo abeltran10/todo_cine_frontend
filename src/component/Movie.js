@@ -40,6 +40,10 @@ const Movie = ({ movie }) => {
                     <Row />
                     <br/>
                     <Row><Container>Generos: {genresName}</Container></Row>
+                    <br/>
+                    <br/>
+                    <Row><Container>Votos totales: {movie.vote_count}</Container></Row>
+                    <Row><Container>Puntuación: {movie.vote_average}</Container></Row>
                 </Col>
             </Row>
 
