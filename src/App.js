@@ -188,13 +188,13 @@ const App = () => {
         return (<div><LoginForm login={login} /></div>)
       else if (movieDetail)
         return (<div><Movie movie={movieDetail} /></div>)
-      else if (user && movieDetail === null && cartelera === null)
+      else if (cartelera === null)
           return (<div>
                     <div><SearchForm search={search} /></div>
                     {(movie) ? container(movie) : <></>}
                   </div>
                   )
-      else if (user && cartelera)
+      else if (cartelera)
           return (<div>
                   {container(cartelera)}
                 </div>)
