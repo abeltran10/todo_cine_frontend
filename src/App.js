@@ -78,6 +78,7 @@ const App = () => {
 
       setUser(null)
       setMovie(null)
+      setTextSearch(null)
       setMovieDetail(null)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
@@ -91,6 +92,7 @@ const App = () => {
       const pelis = await movieService.getByName(text, page)
       setMovie(pelis)
       setTextSearch(text)
+      setMovieDetail(null)
     }
      catch (exception) {
       setErrorMessage('Error en la busqueda')
@@ -139,6 +141,8 @@ const App = () => {
       const peli = await movieService.getMovieById(id)
 
       setMovieDetail(peli)
+      setMovie(null)
+      setTextSearch(null)
     } catch (exception) {
       setErrorMessage('Error al cargar el detalle de la película')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -150,6 +154,8 @@ const App = () => {
       const pelis = await movieService.getMoviesPlayingNowByRegion("ES")
 
       setMovie(pelis)
+      setMovieDetail(null)
+      setTextSearch(null)
     } catch (exception) {
       setErrorMessage('No hay películas para la región seleccionada')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -157,33 +163,42 @@ const App = () => {
     
   }
 
-  return (
-    <div>
-      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} loadCartelera={loadCartelera}/> : <></>}
-      <Notification successMessage={successMessage} errorMessage={errorMessage} />
-      {(user === null) ?  <h1 className='text-info text-center'>TODO CINE</h1> : <></> }
-      { (user === null && movieDetail === null) ? (
-          <div>
-            <LoginForm login={login} />
-          </div>) : <></>}
-      { (user && movieDetail=== null) ?  
-        <div> 
-          <h1 className='text-info text-center'>PELÍCULAS</h1>           
-            <div>
-              <SearchForm search={search} />
+  const showHeader = () => {
+    if (user === null)
+      return (<h1 className='text-info text-center'>TODO CINE</h1>)
+    else if (user && (movieDetail === null))
+      return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
+    else if (movieDetail)
+      return (<h1 className='text-info text-center'>DETALLE</h1>)
+  }
+
+  const showBody = () => {
+      if (user === null)
+        return (<div><LoginForm login={login} /></div>)
+      else if (movieDetail)
+        return (<div><Movie movie={movieDetail} /></div>)
+      else if (user && movieDetail === null)
+        return (<div>
+                <SearchForm search={search} />
                 <Container className='p-3 mb-2' fluid="md">
                   {showGridMovies(movie)}
                 </Container>
-            </div>
-          <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /> : <></>}</div>
-        </div> 
-       : <></>}
-      {(movieDetail) ? 
-          <div>
-            <div><h1 className='text-info text-center'>DETALLE</h1></div>
-            <Movie movie={movieDetail} />
-          </div>
-           : <></>}
+              </div>)
+  }
+
+  const showFooter = () => {
+    if (user && movie)
+      return (<div><Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /></div>)
+
+  }
+
+  return (
+    <div>
+      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} loadCartelera={loadCartelera}/> : <></>}
+      {showHeader()}
+      <Notification successMessage={successMessage} errorMessage={errorMessage} />
+      {showBody()}
+      {showFooter()}
     </div>
   );
 }
