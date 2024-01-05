@@ -9,10 +9,9 @@ import LoginForm from './component/LoginForm'
 import Notification from './component/Notification'
 import SearchForm from './component/SearchForm'
 import MovieCard from './component/MovieCard'
-import Footer from './component/Footer'
+import Paginator from './component/Paginator'
 import NavigationBar from './component/NavigationBar'
 import Movie from './component/Movie'
-
 
 import loginService from './service/login'
 import movieService from './service/movie'
@@ -153,14 +152,14 @@ const App = () => {
     }
   }
 
-  const loadCartelera = async (region) => {
+  const loadCartelera = async (region, page) => {
     try {
-      const pelis = await movieService.getMoviesPlayingNowByRegion("ES")
+      const pelis = await movieService.getMoviesPlayingNowByRegion(region, page)
 
       setCartelera(pelis)
       setMovie(null)
       setMovieDetail(null)
-      setTextSearch(null)
+      setTextSearch(region)
     } catch (exception) {
       setErrorMessage('No hay películas para la región seleccionada')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -201,11 +200,12 @@ const App = () => {
   }
 
   const showFooter = () => {
-    if (user && movie)
-      return (<div><Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /></div>)
-
+    if (user && movie)      
+      return (<div><Paginator functionSearch={search} text={textSearch} pageNumbers={movie.total_pages} /></div>)
+    else if (user && cartelera)
+      return (<div><Paginator functionSearch={loadCartelera} text={textSearch} pageNumbers={cartelera.total_pages} /></div>)
   }
-
+  
   return (
     <div>
       {(user !== null) ? <NavigationBar username= {user.username} logout={logout} loadCartelera={loadCartelera}/> : <></>}
@@ -214,7 +214,7 @@ const App = () => {
       {showBody()}
       {showFooter()}
     </div>
-  );
+  )
 }
 
 export default App;

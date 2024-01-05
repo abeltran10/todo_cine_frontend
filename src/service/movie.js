@@ -26,12 +26,12 @@ const getMovieById = async (id) => {
   return response.data
 }
 
-const getMoviesPlayingNowByRegion = async (region) => {
+const getMoviesPlayingNowByRegion = async (region, page) => {
   const config = {
       headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
     }
 
-  const response =  await axios.get(`${baseUrl}/now/${region}`, config)
+  const response =  await axios.get(`${baseUrl}/now/${region}?page=${page}`, config)
   return response.data
 }
 

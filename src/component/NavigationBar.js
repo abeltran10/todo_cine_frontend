@@ -16,7 +16,7 @@ const NavigationBar = ({username, logout, loadCartelera}) => {
   const handleCartelera = async (event) => {
     event.preventDefault()
 
-    await loadCartelera()
+    await loadCartelera('ES', 1)
   }
 
 
