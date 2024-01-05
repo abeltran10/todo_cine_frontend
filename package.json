@@ -25,7 +25,7 @@
   
   "proxy": "http://localhost:8080",
   
-  "homepage": ".",
+  "homepage": "./static",
 
   "eslintConfig": {
     "extends": [
