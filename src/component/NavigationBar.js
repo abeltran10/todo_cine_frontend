@@ -2,7 +2,8 @@ import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
-import Button from 'react-bootstrap/Button'
+import Regions from '../enums/Regions'
+
 
 const NavigationBar = ({username, logout, loadCartelera}) => {
 
@@ -13,10 +14,10 @@ const NavigationBar = ({username, logout, loadCartelera}) => {
     await logout()
   } 
 
-  const handleCartelera = async (event) => {
+  const handleCartelera = async (event, region) => {
     event.preventDefault()
 
-    await loadCartelera('ES', 1)
+    await loadCartelera(region, 1)
   }
 
 
@@ -28,10 +29,13 @@ const NavigationBar = ({username, logout, loadCartelera}) => {
           <Navbar.Brand href="#brand">Todo Cine</Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="#cartelera"><Button variant="link" onClick={handleCartelera}>Cartelera</Button></Nav.Link>
+            <Nav.Link href="/">Home</Nav.Link>{'  '}
+            <NavDropdown title="Cartelera" id="navbarScrollingDropdown">
+              {Regions.getValues().map(k => <NavDropdown.Item key={k[0]} onClick={(event) => handleCartelera(event, k[1])}>{k[2]}</NavDropdown.Item>)}
+            </NavDropdown>
+            
           <NavDropdown title={signed} id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#logout"><Button variant="danger" onClick={handleLogout}>Log out</Button></NavDropdown.Item>
+              {'  '}<NavDropdown.Item href="#logout" onClick={handleLogout}>Log out</NavDropdown.Item>
             </NavDropdown>
           </Navbar.Collapse>
         </Container>
