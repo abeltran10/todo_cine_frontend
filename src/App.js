@@ -25,6 +25,7 @@ const App = () => {
   const [ movie, setMovie ] = useState(null)
   const [ movieDetail, setMovieDetail ] = useState(null)
   const [ textSearch, setTextSearch ] = useState('')
+  const [cartelera, setCartelera] = useState(null)
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
@@ -80,6 +81,7 @@ const App = () => {
       setMovie(null)
       setTextSearch(null)
       setMovieDetail(null)
+      setCartelera(null)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -93,6 +95,7 @@ const App = () => {
       setMovie(pelis)
       setTextSearch(text)
       setMovieDetail(null)
+      setCartelera(null)
     }
      catch (exception) {
       setErrorMessage('Error en la busqueda')
@@ -143,6 +146,7 @@ const App = () => {
       setMovieDetail(peli)
       setMovie(null)
       setTextSearch(null)
+      setCartelera(null)
     } catch (exception) {
       setErrorMessage('Error al cargar el detalle de la película')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -153,7 +157,8 @@ const App = () => {
     try {
       const pelis = await movieService.getMoviesPlayingNowByRegion("ES")
 
-      setMovie(pelis)
+      setCartelera(pelis)
+      setMovie(null)
       setMovieDetail(null)
       setTextSearch(null)
     } catch (exception) {
@@ -173,17 +178,26 @@ const App = () => {
   }
 
   const showBody = () => {
+      const container = (pelis) => {
+                  return (<Container className='p-3 mb-2' fluid="md">
+                     {showGridMovies(pelis)}
+                 </Container>)
+      }
+    
       if (user === null)
         return (<div><LoginForm login={login} /></div>)
       else if (movieDetail)
         return (<div><Movie movie={movieDetail} /></div>)
-      else if (user && movieDetail === null)
-        return (<div>
-                <SearchForm search={search} />
-                <Container className='p-3 mb-2' fluid="md">
-                  {showGridMovies(movie)}
-                </Container>
-              </div>)
+      else if (user && movieDetail === null && cartelera === null)
+          return (<div>
+                    <div><SearchForm search={search} /></div>
+                    {(movie) ? container(movie) : <></>}
+                  </div>
+                  )
+      else if (user && cartelera)
+          return (<div>
+                  {container(cartelera)}
+                </div>)
   }
 
   const showFooter = () => {
