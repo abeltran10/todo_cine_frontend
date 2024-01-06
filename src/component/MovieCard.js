@@ -12,11 +12,13 @@ const MovieCard = ({movie, loadMovieDetail}) => {
       await loadMovieDetail(id)
   }
 
+  const releaseDate = `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})`
+
   return (
       <Card style={{ width: '18rem' }}>
         <Card.Img variant="top" src={img} />
           <Card.Body>
-            <Card.Title>{movie.title} {movie.release_date.substring(0, movie.release_date.indexOf("-"))}</Card.Title>
+            <Card.Title>{movie.title}  {releaseDate}</Card.Title>
             <Card.Text>
               {movie.overview}
             </Card.Text>

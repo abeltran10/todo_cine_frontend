@@ -9,10 +9,9 @@ import LoginForm from './component/LoginForm'
 import Notification from './component/Notification'
 import SearchForm from './component/SearchForm'
 import MovieCard from './component/MovieCard'
-import Footer from './component/Footer'
+import Paginator from './component/Paginator'
 import NavigationBar from './component/NavigationBar'
 import Movie from './component/Movie'
-
 
 import loginService from './service/login'
 import movieService from './service/movie'
@@ -25,6 +24,7 @@ const App = () => {
   const [ movie, setMovie ] = useState(null)
   const [ movieDetail, setMovieDetail ] = useState(null)
   const [ textSearch, setTextSearch ] = useState('')
+  const [cartelera, setCartelera] = useState(null)
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
@@ -53,17 +53,15 @@ const App = () => {
       const response = userService.getByName(username)
 
       response.then(response => {
-        if (response instanceof Error) {
-          setErrorMessage('No se ha podido iniciar sesión')
-          setTimeout(() => { setErrorMessage(null) }, 5000)
-        } else {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
-
-        }
+      }).catch(error => {
+        setErrorMessage(error.response.data.message)
+        setTimeout(() => { setErrorMessage(null) }, 5000)
       })
+        
     } catch (exception) {
-      setErrorMessage('Usuario o contraseña no validos')
+      setErrorMessage('Usuario o contraseña incorrectos')
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }
 
@@ -78,7 +76,9 @@ const App = () => {
 
       setUser(null)
       setMovie(null)
+      setTextSearch(null)
       setMovieDetail(null)
+      setCartelera(null)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -91,9 +91,11 @@ const App = () => {
       const pelis = await movieService.getByName(text, page)
       setMovie(pelis)
       setTextSearch(text)
+      setMovieDetail(null)
+      setCartelera(null)
     }
-     catch (exception) {
-      setErrorMessage('Error en la busqueda')
+     catch (error) {
+      setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }   
   }
@@ -139,37 +141,78 @@ const App = () => {
       const peli = await movieService.getMovieById(id)
 
       setMovieDetail(peli)
-    } catch (exception) {
-      setErrorMessage('Error al cargar el detalle de la película')
+      setMovie(null)
+      setTextSearch(null)
+      setCartelera(null)
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+  }
+
+  const loadCartelera = async (region, page) => {
+    try {
+      const pelis = await movieService.getMoviesPlayingNowByRegion(region, page)
+
+      setCartelera(pelis)
+      setMovie(null)
+      setMovieDetail(null)
+      setTextSearch(region)
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }
     
-
-
   }
 
+  const showHeader = () => {
+    if (user === null)
+      return (<h1 className='text-info text-center'>TODO CINE</h1>)
+    else if (user && (movieDetail === null))
+      return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
+    else if (movieDetail)
+      return (<h1 className='text-info text-center'>DETALLE</h1>)
+  }
+
+  const showBody = () => {
+      const container = (pelis) => {
+                  return (<Container className='p-3 mb-2' fluid="md">
+                     {showGridMovies(pelis)}
+                 </Container>)
+      }
+    
+      if (user === null)
+        return (<div><LoginForm login={login} /></div>)
+      else if (movieDetail)
+        return (<div><Movie movie={movieDetail} /></div>)
+      else if (cartelera === null)
+          return (<div>
+                    <div><SearchForm search={search} /></div>
+                    {(movie) ? container(movie) : <></>}
+                  </div>
+                  )
+      else if (cartelera)
+          return (<div>
+                  {container(cartelera)}
+                </div>)
+  }
+
+  const showFooter = () => {
+    if (user && movie)      
+      return (<div><Paginator functionSearch={search} text={textSearch} pageNumbers={movie.total_pages} /></div>)
+    else if (user && cartelera)
+      return (<div><Paginator functionSearch={loadCartelera} text={textSearch} pageNumbers={cartelera.total_pages} /></div>)
+  }
+  
   return (
     <div>
-      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} /> : <></>}
-      <h1 className='text-info text-center'>MOVIE DATABASE</h1>
+      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} loadCartelera={loadCartelera}/> : <></>}
+      {showHeader()}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
-      { (user === null && movieDetail === null) ?
-          <LoginForm login={login} /> : <></>}
-      { (user && movieDetail=== null) ?  
-         <div>            
-            <div>
-              <SearchForm search={search} />
-                <Container className='p-3 mb-2' fluid="md">
-                  {showGridMovies(movie)}
-                </Container>
-          </div>
-          <div>{(movie !== null) ? <Footer search={search} textSearch={textSearch} pageNumbers={movie.total_pages} /> : <></>}</div>
-         </div> 
-       : <></>}
-      {(movieDetail) ? 
-          <Movie movie={movieDetail} /> : <></>}
+      {showBody()}
+      {showFooter()}
     </div>
-  );
+  )
 }
 
 export default App;

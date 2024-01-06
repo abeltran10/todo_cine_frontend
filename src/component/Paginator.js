@@ -6,7 +6,7 @@ import  Row  from 'react-bootstrap/Row'
 import  Col  from 'react-bootstrap/Col'
 
 
-const Footer = ({search, textSearch, pageNumbers}) => {
+const Paginator = ({functionSearch, text, pageNumbers}) => {
     const [page, setPage] = useState(0)
     const [activePage, setActivePage] = useState(1)
     
@@ -22,7 +22,7 @@ const Footer = ({search, textSearch, pageNumbers}) => {
 
 
     const handleShowNewPage = async (page) => {
-      await search(textSearch, page)
+      await functionSearch(text, page)
       setPage(page - 1)
       setActivePage(page)
     }
@@ -102,4 +102,4 @@ const Footer = ({search, textSearch, pageNumbers}) => {
     
 }
 
-export default Footer
+export default Paginator
