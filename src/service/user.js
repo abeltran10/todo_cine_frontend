@@ -7,9 +7,8 @@ const getByName = (name) => {
         headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
       }
 
-    const response = axios.get(`${baseUrl}/${name}`, config)
-    return response.then(response => response.data).catch(ex => new Error(ex))
-    
+    const response = axios.get(`${baseUrl}/username/${name}`, config)
+    return response.then(response => response.data)  
 }
 
 

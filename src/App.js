@@ -53,17 +53,15 @@ const App = () => {
       const response = userService.getByName(username)
 
       response.then(response => {
-        if (response instanceof Error) {
-          setErrorMessage('No se ha podido iniciar sesión')
-          setTimeout(() => { setErrorMessage(null) }, 5000)
-        } else {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
-
-        }
+      }).catch(error => {
+        setErrorMessage(error.response.data.message)
+        setTimeout(() => { setErrorMessage(null) }, 5000)
       })
+        
     } catch (exception) {
-      setErrorMessage('Usuario o contraseña no validos')
+      setErrorMessage('Usuario o contraseña incorrectos')
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }
 
@@ -96,8 +94,8 @@ const App = () => {
       setMovieDetail(null)
       setCartelera(null)
     }
-     catch (exception) {
-      setErrorMessage('Error en la busqueda')
+     catch (error) {
+      setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }   
   }
@@ -146,8 +144,8 @@ const App = () => {
       setMovie(null)
       setTextSearch(null)
       setCartelera(null)
-    } catch (exception) {
-      setErrorMessage('Error al cargar el detalle de la película')
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }
   }
@@ -160,8 +158,8 @@ const App = () => {
       setMovie(null)
       setMovieDetail(null)
       setTextSearch(region)
-    } catch (exception) {
-      setErrorMessage('No hay películas para la región seleccionada')
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }
     
