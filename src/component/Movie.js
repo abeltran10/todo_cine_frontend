@@ -13,9 +13,6 @@ const Movie = ({ movie }) => {
 
     const releaseDate = `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})`
 
-
-    let genresName = ''
-
     
     return (
         <Container>
