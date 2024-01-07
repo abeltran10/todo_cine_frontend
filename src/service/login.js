@@ -11,7 +11,7 @@ const logout = async () => {
     headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
   }
 
-  await axios.get('/app/logout', config)
+  await axios.post('/app/logout', null, config)
 }
 
 export default { login, logout }
