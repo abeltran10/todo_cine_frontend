@@ -11,5 +11,14 @@ const getByName = (name) => {
     return response.then(response => response.data)  
 }
 
+const updateUsuario = async (id, user) => {
+  const config = {
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+  }
 
-export default { getByName }
+  const response = await axios.put(`${baseUrl}/${id}`, user, config)
+  return response.data  
+}
+
+
+export default { getByName, updateUsuario }
