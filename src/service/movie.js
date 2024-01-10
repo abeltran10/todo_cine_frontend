@@ -35,12 +35,12 @@ const getMoviesPlayingNowByRegion = async (region, page) => {
   return response.data
 }
 
-const getFavsByUserId = async (userId) => {
+const getFavsByUserId = async (userId, pagina) => {
   const config = {
       headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
     }
 
-  const response =  await axios.get(`${baseUrl}/favs/${userId}`, config)
+  const response =  await axios.get(`${baseUrl}/favs/${userId}?page=${pagina}`, config)
   return response.data
 }
 

@@ -6,7 +6,7 @@ import  Row  from 'react-bootstrap/Row'
 import  Col  from 'react-bootstrap/Col'
 
 
-const Paginator = ({functionSearch, text, pageNumbers}) => {
+const Paginator = ({functionSearch, param, pageNumbers}) => {
     const [page, setPage] = useState(0)
     const [activePage, setActivePage] = useState(1)
     
@@ -22,7 +22,7 @@ const Paginator = ({functionSearch, text, pageNumbers}) => {
 
 
     const handleShowNewPage = async (page) => {
-      await functionSearch(text, page)
+      await functionSearch(param, page)
       setPage(page - 1)
       setActivePage(page)
     }

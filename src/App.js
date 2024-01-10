@@ -146,6 +146,7 @@ const App = () => {
       setMovie(null)
       setTextSearch(null)
       setCartelera(null)
+      setFavoritos(null)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -182,10 +183,11 @@ const App = () => {
     
   }
 
-  const loadFavs = async () => {
+  const loadFavs = async (userId, pagina) => {
     try {
-      const response = await movieService.getFavsByUserId(user.id)
+      const response = await movieService.getFavsByUserId(userId, pagina)
       setFavoritos(response)
+      setTextSearch(null)
       setMovie(null)
       setCartelera(null)
       setMovieDetail(null)
@@ -233,14 +235,16 @@ const App = () => {
 
   const showFooter = () => {
     if (user && movie)      
-      return (<div><Paginator functionSearch={search} text={textSearch} pageNumbers={movie.total_pages} /></div>)
+      return (<div><Paginator functionSearch={search} param={textSearch} pageNumbers={movie.total_pages} /></div>)
     else if (user && cartelera)
-      return (<div><Paginator functionSearch={loadCartelera} text={textSearch} pageNumbers={cartelera.total_pages} /></div>)
+      return (<div><Paginator functionSearch={loadCartelera} param={textSearch} pageNumbers={cartelera.total_pages} /></div>)
+    else if (user && favoritos)
+    return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={favoritos.total_pages} /></div>)
   }
   
   return (
     <div>
-      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} loadCartelera={loadCartelera} loadFavs={loadFavs}/> : <></>}
+      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} loadFavs={loadFavs}/> : <></>}
       {showHeader()}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       {showBody()}
