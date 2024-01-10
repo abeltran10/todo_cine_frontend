@@ -4,17 +4,19 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Image from 'react-bootstrap/Image'
+import  Button from 'react-bootstrap/Button'
 
-const Movie = ({ movie }) => {
+const Movie = ({ movie, addFavoritos }) => {
 
     const img = (movie.poster_path) ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : null
     
-    const video = (movie.videos.results.length !== 0) ? `https://www.youtube.com/embed/${movie.videos.results[0].key}` : null
+    const video = (movie.videos.length !== 0) ? `https://www.youtube.com/embed/${movie.videos[0].key}` : null
 
     const releaseDate = `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})`
 
-
-    let genresName = ''
+    const handleFavoritos = async () => {
+        await addFavoritos(movie.id)
+    }
 
     
     return (
@@ -30,6 +32,8 @@ const Movie = ({ movie }) => {
                     <br/>
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
+                    <br/>
+                    <Row><Container><Button variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row>
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
                     <br/>

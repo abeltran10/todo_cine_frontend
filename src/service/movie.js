@@ -35,6 +35,14 @@ const getMoviesPlayingNowByRegion = async (region, page) => {
   return response.data
 }
 
+const getFavsByUserId = async (userId, pagina) => {
+  const config = {
+      headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+    }
+
+  const response =  await axios.get(`${baseUrl}/favs/${userId}?page=${pagina}`, config)
+  return response.data
+}
 
 const create = async newObject => {
   const config = {
@@ -59,4 +67,4 @@ const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`, config)
 }
 
-export default { getAll, getByName, getMovieById, getMoviesPlayingNowByRegion, create, update, remove }
+export default { getAll, getByName, getMovieById, getMoviesPlayingNowByRegion, getFavsByUserId, create, update, remove }

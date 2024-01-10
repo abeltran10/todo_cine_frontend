@@ -6,7 +6,7 @@ import Regions from '../enums/Regions'
 import { NavbarCollapse } from 'react-bootstrap'
 
 
-const NavigationBar = ({username, logout, loadCartelera}) => {
+const NavigationBar = ({user, logout, loadCartelera, loadFavs}) => {
 
 
   const handleLogout = async () => {
@@ -17,8 +17,12 @@ const NavigationBar = ({username, logout, loadCartelera}) => {
     await loadCartelera(region, 1)
   }
 
+  const handleFavs = async (userId) => {
+    await loadFavs(userId, 1)
+  }
 
-  const signed = `Signed as ${username}`
+
+  const signed = `Signed as ${user.username}`
 
     return (
        <Navbar className="bg-body-tertiary">
@@ -32,6 +36,7 @@ const NavigationBar = ({username, logout, loadCartelera}) => {
                 {Regions.getValues().map(k => <NavDropdown.Item key={k[0]} onClick={() => handleCartelera(k[1])}>{k[2]}</NavDropdown.Item>)}
               </NavDropdown>      
               <NavDropdown title={signed} id="navbarScrollingDropdown">
+              <NavDropdown.Item href="#fav" onClick={() => handleFavs(user.id)}>Favoritos</NavDropdown.Item>
                 <NavDropdown.Item href="#logout" onClick={handleLogout}>Log out</NavDropdown.Item>
               </NavDropdown>
            </Nav>

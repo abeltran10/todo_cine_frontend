@@ -25,6 +25,7 @@ const App = () => {
   const [ movieDetail, setMovieDetail ] = useState(null)
   const [ textSearch, setTextSearch ] = useState('')
   const [cartelera, setCartelera] = useState(null)
+  const [ favoritos, setFavoritos ] = useState(null)
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
@@ -36,12 +37,12 @@ const App = () => {
       
       const response = userService.getByName(user.username)
       response.then(response => {
-        if (!(response instanceof Error)) {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
-        }
-
-      }) 
+        }).catch(error => {
+          window.localStorage.removeItem('loggedUserToken')
+          window.localStorage.removeItem('loggedUserMovie')
+        })
     }
  }, []) 
 
@@ -79,6 +80,7 @@ const App = () => {
       setTextSearch(null)
       setMovieDetail(null)
       setCartelera(null)
+      setFavoritos(null)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -144,6 +146,7 @@ const App = () => {
       setMovie(null)
       setTextSearch(null)
       setCartelera(null)
+      setFavoritos(null)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -165,6 +168,36 @@ const App = () => {
     
   }
 
+  const addFavoritos = async (movieId) => {
+    const fav = user.favoritos.filter(mov => movieId !== mov.id).concat(movieId)
+    const usuario = {...user, favoritos: fav}
+    
+    try {
+      const response = await userService.updateUsuario(usuario.id, usuario)
+      setUser(response)
+      window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+  }
+
+  const loadFavs = async (userId, pagina) => {
+    try {
+      const response = await movieService.getFavsByUserId(userId, pagina)
+      setFavoritos(response)
+      setTextSearch(null)
+      setMovie(null)
+      setCartelera(null)
+      setMovieDetail(null)
+    } catch(error) {
+      console.log(error)
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    } 
+  }
+
   const showHeader = () => {
     if (user === null)
       return (<h1 className='text-info text-center'>TODO CINE</h1>)
@@ -184,29 +217,34 @@ const App = () => {
       if (user === null)
         return (<div><LoginForm login={login} /></div>)
       else if (movieDetail)
-        return (<div><Movie movie={movieDetail} /></div>)
-      else if (cartelera === null)
+        return (<div><Movie movie={movieDetail} addFavoritos={addFavoritos}/></div>)
+      else if (cartelera === null && favoritos === null)
           return (<div>
                     <div><SearchForm search={search} /></div>
                     {(movie) ? container(movie) : <></>}
                   </div>
                   )
-      else if (cartelera)
-          return (<div>
-                  {container(cartelera)}
+      else if (cartelera || favoritos) {
+        const pelis = (cartelera) ? cartelera : favoritos
+        console.log(pelis)
+        return (<div>
+                  {container(pelis)}
                 </div>)
+      }
   }
 
   const showFooter = () => {
     if (user && movie)      
-      return (<div><Paginator functionSearch={search} text={textSearch} pageNumbers={movie.total_pages} /></div>)
+      return (<div><Paginator functionSearch={search} param={textSearch} pageNumbers={movie.total_pages} /></div>)
     else if (user && cartelera)
-      return (<div><Paginator functionSearch={loadCartelera} text={textSearch} pageNumbers={cartelera.total_pages} /></div>)
+      return (<div><Paginator functionSearch={loadCartelera} param={textSearch} pageNumbers={cartelera.total_pages} /></div>)
+    else if (user && favoritos)
+    return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={favoritos.total_pages} /></div>)
   }
   
   return (
     <div>
-      {(user !== null) ? <NavigationBar username= {user.username} logout={logout} loadCartelera={loadCartelera}/> : <></>}
+      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} loadFavs={loadFavs}/> : <></>}
       {showHeader()}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       {showBody()}
