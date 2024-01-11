@@ -23,9 +23,10 @@ const App = () => {
   const [ user, setUser ] = useState(null)
   const [ movie, setMovie ] = useState(null)
   const [ movieDetail, setMovieDetail ] = useState(null)
-  const [ textSearch, setTextSearch ] = useState('')
-  const [cartelera, setCartelera] = useState(null)
-  const [ favoritos, setFavoritos ] = useState(null)
+  const [ paramSearch, setParamSearch ] = useState('')
+  const [ showSearchForm, setShowSearchForm ] = useState(false)
+  const [ showCartelera, setShowCartelera ] = useState(false)
+  const [ showFavoritos, setShowFavoritos ] = useState(false)
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
@@ -40,6 +41,9 @@ const App = () => {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
         }).catch(error => {
+          setErrorMessage('La sesión ha caducado')
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+
           window.localStorage.removeItem('loggedUserToken')
           window.localStorage.removeItem('loggedUserMovie')
         })
@@ -55,6 +59,9 @@ const App = () => {
 
       response.then(response => {
           setUser(response)
+          setShowSearchForm(true)
+          setSuccessMessage('Iniciada sesión')
+          setTimeout(() => { setSuccessMessage(null) }, 5000)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
       }).catch(error => {
         setErrorMessage(error.response.data.message)
@@ -77,10 +84,11 @@ const App = () => {
 
       setUser(null)
       setMovie(null)
-      setTextSearch(null)
+      setParamSearch(null)
       setMovieDetail(null)
-      setCartelera(null)
-      setFavoritos(null)
+      setShowSearchForm(false)
+      setShowCartelera(false)
+      setShowFavoritos(false)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -92,11 +100,9 @@ const App = () => {
     try {
       const pelis = await movieService.getByName(text, page)
       setMovie(pelis)
-      setTextSearch(text)
+      setParamSearch(text)
       setMovieDetail(null)
-      setCartelera(null)
-    }
-     catch (error) {
+    } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }   
@@ -144,9 +150,10 @@ const App = () => {
 
       setMovieDetail(peli)
       setMovie(null)
-      setTextSearch(null)
-      setCartelera(null)
-      setFavoritos(null)
+      setParamSearch(null)
+      setShowSearchForm(false)
+      setShowFavoritos(false)
+      setShowCartelera(false)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -157,10 +164,12 @@ const App = () => {
     try {
       const pelis = await movieService.getMoviesPlayingNowByRegion(region, page)
 
-      setCartelera(pelis)
-      setMovie(null)
+      setMovie(pelis)
       setMovieDetail(null)
-      setTextSearch(region)
+      setShowSearchForm(false)
+      setShowFavoritos(false)
+      setShowCartelera(true)
+      setParamSearch(region)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -175,6 +184,8 @@ const App = () => {
     try {
       const response = await userService.updateUsuario(usuario.id, usuario)
       setUser(response)
+      setSuccessMessage('Iniciada sesión')
+          setTimeout(() => { setSuccessMessage(null) }, 5000)
       window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
     } catch (error) {
       setErrorMessage(error.response.data.message)
@@ -186,11 +197,13 @@ const App = () => {
   const loadFavs = async (userId, pagina) => {
     try {
       const response = await movieService.getFavsByUserId(userId, pagina)
-      setFavoritos(response)
-      setTextSearch(null)
-      setMovie(null)
-      setCartelera(null)
+      
+      setMovie(response)
+      setParamSearch(null)
       setMovieDetail(null)
+      setShowSearchForm(false)
+      setShowFavoritos(true)
+      setShowCartelera(false)
     } catch(error) {
       console.log(error)
       setErrorMessage(error.response.data.message)
@@ -218,28 +231,26 @@ const App = () => {
         return (<div><LoginForm login={login} /></div>)
       else if (movieDetail)
         return (<div><Movie movie={movieDetail} addFavoritos={addFavoritos}/></div>)
-      else if (cartelera === null && favoritos === null)
+      else if (showSearchForm)
           return (<div>
                     <div><SearchForm search={search} /></div>
                     {(movie) ? container(movie) : <></>}
                   </div>
                   )
-      else if (cartelera || favoritos) {
-        const pelis = (cartelera) ? cartelera : favoritos
-        console.log(pelis)
+      else if (movie) {
         return (<div>
-                  {container(pelis)}
+                  {container(movie)}
                 </div>)
       }
   }
 
-  const showFooter = () => {
-    if (user && movie)      
-      return (<div><Paginator functionSearch={search} param={textSearch} pageNumbers={movie.total_pages} /></div>)
-    else if (user && cartelera)
-      return (<div><Paginator functionSearch={loadCartelera} param={textSearch} pageNumbers={cartelera.total_pages} /></div>)
-    else if (user && favoritos)
-    return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={favoritos.total_pages} /></div>)
+  const showFooter = () => {      
+    if (user && !showCartelera && !showFavoritos)  
+      return (<div><Paginator functionSearch={search} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
+    else if (user && showCartelera)
+      return (<div><Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
+    else if (user && showFavoritos)
+    return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movie.total_pages} /></div>)
   }
   
   return (
