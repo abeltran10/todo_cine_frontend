@@ -6,7 +6,9 @@ import Col from 'react-bootstrap/Col'
 import Image from 'react-bootstrap/Image'
 import  Button from 'react-bootstrap/Button'
 
-const Movie = ({ movie, addFavoritos }) => {
+const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
+
+    const showAddButton = (userFavs.length === 0)
 
     const img = (movie.poster_path) ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : null
     
@@ -18,6 +20,9 @@ const Movie = ({ movie, addFavoritos }) => {
         await addFavoritos(movie.id)
     }
 
+    const handleRemoveFav = async () => {
+        await removeFavoritos(movie.id)
+    }
     
     return (
         <Container>
@@ -33,7 +38,8 @@ const Movie = ({ movie, addFavoritos }) => {
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
                     <br/>
-                    <Row><Container><Button variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row>
+                    {showAddButton ? <Row><Container><Button variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row> : 
+                            <Row><Container><Button variant="secondary" type="button" onClick={handleRemoveFav}>Quitar de favoritos</Button></Container></Row> }
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
                     <br/>
