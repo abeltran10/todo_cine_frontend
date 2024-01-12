@@ -40,6 +40,7 @@ const App = () => {
       response.then(response => {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+          setShowSearchForm(true)
         }).catch(error => {
           setErrorMessage('La sesión ha caducado')
           setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -184,8 +185,8 @@ const App = () => {
     try {
       const response = await userService.updateUsuario(usuario.id, usuario)
       setUser(response)
-      setSuccessMessage('Iniciada sesión')
-          setTimeout(() => { setSuccessMessage(null) }, 5000)
+      setSuccessMessage('Añadida película a favoritos')
+      setTimeout(() => { setSuccessMessage(null) }, 5000)
       window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
     } catch (error) {
       setErrorMessage(error.response.data.message)
@@ -245,11 +246,11 @@ const App = () => {
   }
 
   const showFooter = () => {      
-    if (user && !showCartelera && !showFavoritos)  
+    if (user && movie && !showCartelera && !showFavoritos)  
       return (<div><Paginator functionSearch={search} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
-    else if (user && showCartelera)
+    else if (user && movie && showCartelera)
       return (<div><Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
-    else if (user && showFavoritos)
+    else if (user && movie && showFavoritos)
     return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movie.total_pages} /></div>)
   }
   
