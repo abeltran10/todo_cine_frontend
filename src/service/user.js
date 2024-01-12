@@ -11,14 +11,23 @@ const getByName = (name) => {
     return response.then(response => response.data)  
 }
 
-const updateUsuario = async (id, user) => {
+const addFavsByUserId = async (id, movieId) => {
   const config = {
     headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
   }
 
-  const response = await axios.put(`${baseUrl}/${id}`, user, config)
+  const response = await axios.post(`${baseUrl}/${id}/favs/${movieId}`, null, config)
+  return response.data  
+}
+
+const removeFavsByUserId = async (id, movieId) => {
+  const config = {
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+  }
+
+  const response = await axios.delete(`${baseUrl}/${id}/favs/${movieId}`, config)
   return response.data  
 }
 
 
-export default { getByName, updateUsuario }
+export default { getByName, addFavsByUserId, removeFavsByUserId }
