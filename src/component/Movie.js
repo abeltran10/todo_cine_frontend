@@ -17,7 +17,7 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
     const releaseDate = `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})`
 
     const handleFavoritos = async () => {
-        await addFavoritos(movie.id)
+        await addFavoritos(movie)
     }
 
     const handleRemoveFav = async () => {

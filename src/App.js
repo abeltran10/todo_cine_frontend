@@ -178,9 +178,9 @@ const App = () => {
     
   }
 
-  const addFavoritos = async (movieId) => {    
+  const addFavoritos = async (movie) => {    
     try {
-      const response = await userService.addFavsByUserId(user.id, movieId)
+      const response = await userService.addFavsByUserId(user.id, movie)
       setUser(response)
       setSuccessMessage('Añadida película a favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)

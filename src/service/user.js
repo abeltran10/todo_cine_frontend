@@ -11,12 +11,12 @@ const getByName = (name) => {
     return response.then(response => response.data)  
 }
 
-const addFavsByUserId = async (id, movieId) => {
+const addFavsByUserId = async (id, movie) => {
   const config = {
     headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
   }
 
-  const response = await axios.post(`${baseUrl}/${id}/favs/${movieId}`, null, config)
+  const response = await axios.put(`${baseUrl}/${id}/favs`, movie, config)
   return response.data  
 }
 
