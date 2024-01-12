@@ -208,7 +208,7 @@ const App = () => {
 
   const loadFavs = async (userId, pagina) => {
     try {
-      const response = await movieService.getFavsByUserId(userId, pagina)
+      const response = await userService.getUserFavs(userId, pagina)
       
       setMovie(response)
       setParamSearch(null)

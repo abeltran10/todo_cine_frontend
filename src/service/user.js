@@ -11,6 +11,15 @@ const getByName = (name) => {
     return response.then(response => response.data)  
 }
 
+const getUserFavs = async (id, pagina) => {
+  const config = {
+      headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+    }
+
+  const response =  await axios.get(`${baseUrl}/${id}/favs?page=${pagina}`, config)
+  return response.data
+}
+
 const addFavsByUserId = async (id, movie) => {
   const config = {
     headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
@@ -30,4 +39,4 @@ const removeFavsByUserId = async (id, movieId) => {
 }
 
 
-export default { getByName, addFavsByUserId, removeFavsByUserId }
+export default { getByName, getUserFavs, addFavsByUserId, removeFavsByUserId }
