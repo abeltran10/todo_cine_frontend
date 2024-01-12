@@ -178,16 +178,27 @@ const App = () => {
     
   }
 
-  const addFavoritos = async (movieId) => {
-    const fav = user.favoritos.filter(mov => movieId !== mov.id).concat(movieId)
-    const usuario = {...user, favoritos: fav}
-    
+  const addFavoritos = async (movieId) => {    
     try {
-      const response = await userService.updateUsuario(usuario.id, usuario)
+      const response = await userService.addFavsByUserId(user.id, movieId)
       setUser(response)
       setSuccessMessage('Añadida película a favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
-      window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+  }
+
+  const removeFavoritos = async (movieId) => {    
+    try {
+      await userService.removeFavsByUserId(user.id, movieId)
+      
+      const favs = user.favoritos.filter(favs => favs.id !== movieId)
+      setUser({...user, favoritos: favs})
+      setSuccessMessage('Eliminada película de favoritos')
+      setTimeout(() => { setSuccessMessage(null) }, 5000)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -215,10 +226,11 @@ const App = () => {
   const showHeader = () => {
     if (user === null)
       return (<h1 className='text-info text-center'>TODO CINE</h1>)
-    else if (user && (movieDetail === null))
-      return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
     else if (movieDetail)
       return (<h1 className='text-info text-center'>DETALLE</h1>)
+    else
+      return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
+   
   }
 
   const showBody = () => {
@@ -231,7 +243,7 @@ const App = () => {
       if (user === null)
         return (<div><LoginForm login={login} /></div>)
       else if (movieDetail)
-        return (<div><Movie movie={movieDetail} addFavoritos={addFavoritos}/></div>)
+        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.id === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} removeFavoritos={removeFavoritos}/></div>)
       else if (showSearchForm)
           return (<div>
                     <div><SearchForm search={search} /></div>
