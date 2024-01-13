@@ -13,7 +13,7 @@ const getByName = async (name, page) => {
         headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
       }
 
-    const response =  await axios.get(`${baseUrl}/name/${name}?page=${page}`, config)
+    const response =  await axios.get(`${baseUrl}/search?name=${name}&page=${page}`, config)
     return response.data
 }
 
@@ -31,40 +31,8 @@ const getMoviesPlayingNowByRegion = async (region, page) => {
       headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
     }
 
-  const response =  await axios.get(`${baseUrl}/now/${region}?page=${page}`, config)
+  const response =  await axios.get(`${baseUrl}/now?region=${region}&page=${page}`, config)
   return response.data
 }
 
-const getFavsByUserId = async (userId, pagina) => {
-  const config = {
-      headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
-    }
-
-  const response =  await axios.get(`${baseUrl}/favs/${userId}?page=${pagina}`, config)
-  return response.data
-}
-
-const create = async newObject => {
-  const config = {
-    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
-  }
-
-  const response = await axios.post(baseUrl, newObject, config)
-  return response.data
-}
-
-const update = async (id, newObject) => {
-  const response = await axios.put(`${baseUrl}/${id}`, newObject)
-
-  return response.data
-}
-
-const remove = async (id) => {
-  const config = {
-    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
-  }
-
-  await axios.delete(`${baseUrl}/${id}`, config)
-}
-
-export default { getAll, getByName, getMovieById, getMoviesPlayingNowByRegion, getFavsByUserId, create, update, remove }
+export default { getAll, getByName, getMovieById, getMoviesPlayingNowByRegion }

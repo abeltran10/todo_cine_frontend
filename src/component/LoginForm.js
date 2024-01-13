@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 
 import React, { useState } from 'react'
 
-const LoginForm = ({ login }) => {
+const LoginForm = ({ login, handleCrearCuenta }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -19,6 +19,10 @@ const LoginForm = ({ login }) => {
     setPassword('')
   }
 
+  const crearCuenta = () => {
+    handleCrearCuenta()
+  }
+
 
   return (
       <Container fluid="md">
@@ -27,18 +31,18 @@ const LoginForm = ({ login }) => {
                   <Form onSubmit={handleLogin}>
                     <Form.Group className="mb-3" controlId="formGroupUsername">
                       <Form.Label>Username</Form.Label>
-                      <Form.Control type="text" value={username} name="username" onChange={({target}) => setUsername(target.value)} placeholder="Enter username" />
+                      <Form.Control type="text" value={username} name="username" onChange={({target}) => setUsername(target.value)} placeholder="Username" />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formGroupPassword">
                       <Form.Label>Password</Form.Label>
                       <Form.Control type="password" value={password} name= "password" onChange={({ target }) => setPassword(target.value)} placeholder="Password" />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Submit
-                      </Button>
+                    <Button variant="primary" type="submit">Entrar</Button>
                   </Form>
                 </Col>
             </Row>
+            <br/>
+            <Row><Col>Si no tienes cuenta haz click en el enlace <Button variant="link" onClick={crearCuenta}>Crear cuenta</Button></Col></Row>
           </Container>   
    
   )

@@ -12,6 +12,8 @@ import MovieCard from './component/MovieCard'
 import Paginator from './component/Paginator'
 import NavigationBar from './component/NavigationBar'
 import Movie from './component/Movie'
+import CreateAccountForm from './component/CreateAccountForm'
+import Profile from './component/Profile'
 
 import loginService from './service/login'
 import movieService from './service/movie'
@@ -19,13 +21,18 @@ import userService from './service/user'
 
 
 
+
+
 const App = () => {
   const [ user, setUser ] = useState(null)
   const [ movie, setMovie ] = useState(null)
   const [ movieDetail, setMovieDetail ] = useState(null)
-  const [ textSearch, setTextSearch ] = useState('')
-  const [cartelera, setCartelera] = useState(null)
-  const [ favoritos, setFavoritos ] = useState(null)
+  const [ paramSearch, setParamSearch ] = useState('')
+  const [ showSearchForm, setShowSearchForm ] = useState(false)
+  const [ showCartelera, setShowCartelera ] = useState(false)
+  const [ showFavoritos, setShowFavoritos ] = useState(false)
+  const [ showCrearCuenta, setShowCrearCuenta ] = useState(false)
+  const [ showProfile, setShowProfile ] = useState(false)
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
@@ -39,7 +46,11 @@ const App = () => {
       response.then(response => {
           setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+          setShowSearchForm(true)
         }).catch(error => {
+          setErrorMessage('La sesión ha caducado')
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+
           window.localStorage.removeItem('loggedUserToken')
           window.localStorage.removeItem('loggedUserMovie')
         })
@@ -55,6 +66,9 @@ const App = () => {
 
       response.then(response => {
           setUser(response)
+          setShowSearchForm(true)
+          setSuccessMessage('Iniciada sesión')
+          setTimeout(() => { setSuccessMessage(null) }, 5000)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
       }).catch(error => {
         setErrorMessage(error.response.data.message)
@@ -68,6 +82,10 @@ const App = () => {
 
   }
 
+  const handleCrearCuenta = () => {
+      setShowCrearCuenta(true)
+  }
+
   const logout = async () => {
     try {
       await loginService.logout()
@@ -77,10 +95,13 @@ const App = () => {
 
       setUser(null)
       setMovie(null)
-      setTextSearch(null)
+      setParamSearch(null)
       setMovieDetail(null)
-      setCartelera(null)
-      setFavoritos(null)
+      setShowSearchForm(false)
+      setShowCartelera(false)
+      setShowFavoritos(false)
+      setShowCrearCuenta(false)
+      setShowProfile(false)
     } catch(exception) {
       setErrorMessage('Error al abandonar la sesión')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -92,11 +113,9 @@ const App = () => {
     try {
       const pelis = await movieService.getByName(text, page)
       setMovie(pelis)
-      setTextSearch(text)
+      setParamSearch(text)
       setMovieDetail(null)
-      setCartelera(null)
-    }
-     catch (error) {
+    } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     }   
@@ -144,9 +163,12 @@ const App = () => {
 
       setMovieDetail(peli)
       setMovie(null)
-      setTextSearch(null)
-      setCartelera(null)
-      setFavoritos(null)
+      setParamSearch(null)
+      setShowSearchForm(false)
+      setShowFavoritos(false)
+      setShowCartelera(false)
+      setShowCrearCuenta(false)
+      setShowProfile(false)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -157,10 +179,14 @@ const App = () => {
     try {
       const pelis = await movieService.getMoviesPlayingNowByRegion(region, page)
 
-      setCartelera(pelis)
-      setMovie(null)
+      setMovie(pelis)
       setMovieDetail(null)
-      setTextSearch(region)
+      setShowSearchForm(false)
+      setShowFavoritos(false)
+      setShowCartelera(true)
+      setParamSearch(region)
+      setShowCrearCuenta(false)
+      setShowProfile(false)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -168,14 +194,27 @@ const App = () => {
     
   }
 
-  const addFavoritos = async (movieId) => {
-    const fav = user.favoritos.filter(mov => movieId !== mov.id).concat(movieId)
-    const usuario = {...user, favoritos: fav}
-    
+  const addFavoritos = async (movie) => {    
     try {
-      const response = await userService.updateUsuario(usuario.id, usuario)
+      const response = await userService.addFavsByUserId(user.id, movie)
       setUser(response)
-      window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+      setSuccessMessage('Añadida película a favoritos')
+      setTimeout(() => { setSuccessMessage(null) }, 5000)
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+  }
+
+  const removeFavoritos = async (movieId) => {    
+    try {
+      await userService.removeFavsByUserId(user.id, movieId)
+      
+      const favs = user.favoritos.filter(favs => favs.id !== movieId)
+      setUser({...user, favoritos: favs})
+      setSuccessMessage('Eliminada película de favoritos')
+      setTimeout(() => { setSuccessMessage(null) }, 5000)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -185,12 +224,16 @@ const App = () => {
 
   const loadFavs = async (userId, pagina) => {
     try {
-      const response = await movieService.getFavsByUserId(userId, pagina)
-      setFavoritos(response)
-      setTextSearch(null)
-      setMovie(null)
-      setCartelera(null)
+      const response = await userService.getUserFavs(userId, pagina)
+      
+      setMovie(response)
+      setParamSearch(null)
       setMovieDetail(null)
+      setShowSearchForm(false)
+      setShowFavoritos(true)
+      setShowCartelera(false)
+      setShowCrearCuenta(false)
+      setShowProfile(false)
     } catch(error) {
       console.log(error)
       setErrorMessage(error.response.data.message)
@@ -198,13 +241,62 @@ const App = () => {
     } 
   }
 
+  const loadProfile = () => {
+      setMovie(null)
+      setParamSearch(null)
+      setMovieDetail(null)
+      setShowSearchForm(false)
+      setShowFavoritos(false)
+      setShowCartelera(false)
+      setShowCrearCuenta(false)
+      setShowProfile(true)
+  }
+
+  const createUser = async (username, password) => {
+    try {
+      const response = await userService.createUser({ username, password })
+      
+      setShowCrearCuenta(false)
+      setSuccessMessage('Cuenta creada con exito')
+      setTimeout(() => { setSuccessMessage(null) }, 5000)
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+  }   
+  
+  const updateUser = async (username, password, passConfirm) => {
+    
+        if (password !== passConfirm) {
+          setErrorMessage('Las password no coinciden')
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+        } else {
+          try {
+            const usuario = {...user, username, password}
+            
+            const response = await userService.updateUser(usuario)
+            setUser(response)
+            
+            setSuccessMessage('Usuario actualizado con exito')
+            setTimeout(() => { setSuccessMessage(null) }, 5000)
+          } catch (error) {
+            setErrorMessage(error.response.data.message)
+            setTimeout(() => { setErrorMessage(null) }, 5000)
+          }
+        }
+
+  }
+
   const showHeader = () => {
     if (user === null)
       return (<h1 className='text-info text-center'>TODO CINE</h1>)
-    else if (user && (movieDetail === null))
-      return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
     else if (movieDetail)
       return (<h1 className='text-info text-center'>DETALLE</h1>)
+    else if (showProfile)
+      return (<h1 className='text-info text-center'>PERFIL</h1>)
+    else
+      return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
+   
   }
 
   const showBody = () => {
@@ -214,37 +306,41 @@ const App = () => {
                  </Container>)
       }
     
-      if (user === null)
-        return (<div><LoginForm login={login} /></div>)
+      if (user === null && !showCrearCuenta)
+        return (<div><LoginForm login={login} handleCrearCuenta={handleCrearCuenta}/></div>)
+
+      else if (user === null && showCrearCuenta)
+        return (<div><CreateAccountForm createUser={createUser} /></div>)
+      
+      else if (showProfile)
+        return (<div><Profile usuario={user} updateUser={updateUser} removeFavoritos={removeFavoritos}/></div>)
+      
       else if (movieDetail)
-        return (<div><Movie movie={movieDetail} addFavoritos={addFavoritos}/></div>)
-      else if (cartelera === null && favoritos === null)
+        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.id === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} removeFavoritos={removeFavoritos}/></div>)
+      
+      else if (showSearchForm)
           return (<div>
                     <div><SearchForm search={search} /></div>
                     {(movie) ? container(movie) : <></>}
                   </div>
                   )
-      else if (cartelera || favoritos) {
-        const pelis = (cartelera) ? cartelera : favoritos
-        console.log(pelis)
-        return (<div>
-                  {container(pelis)}
-                </div>)
-      }
+      
+      else if (movie) 
+        return (<div>{container(movie)}</div>)
   }
 
-  const showFooter = () => {
-    if (user && movie)      
-      return (<div><Paginator functionSearch={search} param={textSearch} pageNumbers={movie.total_pages} /></div>)
-    else if (user && cartelera)
-      return (<div><Paginator functionSearch={loadCartelera} param={textSearch} pageNumbers={cartelera.total_pages} /></div>)
-    else if (user && favoritos)
-    return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={favoritos.total_pages} /></div>)
+  const showFooter = () => {      
+    if (user && movie && !showCartelera && !showFavoritos)  
+      return (<div><Paginator functionSearch={search} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
+    else if (user && movie && showCartelera)
+      return (<div><Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
+    else if (user && movie && showFavoritos)
+      return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movie.total_pages} /></div>)
   }
   
   return (
     <div>
-      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} loadFavs={loadFavs}/> : <></>}
+      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} loadFavs={loadFavs} loadProfile={loadProfile}/> : <></>}
       {showHeader()}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       {showBody()}
@@ -253,4 +349,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default App
