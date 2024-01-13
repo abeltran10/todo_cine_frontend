@@ -38,5 +38,20 @@ const removeFavsByUserId = async (id, movieId) => {
   return response.data  
 }
 
+const createUser = async credentials => {
+   const response = await axios.post(baseUrl, credentials)  
+    return response.data
+}
 
-export default { getByName, getUserFavs, addFavsByUserId, removeFavsByUserId }
+const updateUser = async user => {
+  const config = {
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+  }
+
+  const response = await axios.put(`${baseUrl}/${user.id}`, user, config)  
+  return response.data
+}
+ 
+
+
+export default { getByName, getUserFavs, addFavsByUserId, removeFavsByUserId, createUser, updateUser }
