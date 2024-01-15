@@ -28,7 +28,7 @@ const LoginForm = ({ login, handleCrearCuenta }) => {
       <Container fluid="md">
               <Row>
                 <Col>
-                  <Form onSubmit={handleLogin}>
+                  <Form id="login-form" onSubmit={handleLogin}>
                     <Form.Group className="mb-3" controlId="formGroupUsername">
                       <Form.Label>Username</Form.Label>
                       <Form.Control type="text" value={username} name="username" onChange={({target}) => setUsername(target.value)} placeholder="Username" />
