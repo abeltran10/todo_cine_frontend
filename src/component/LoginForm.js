@@ -28,16 +28,16 @@ const LoginForm = ({ login, handleCrearCuenta }) => {
       <Container fluid="md">
               <Row>
                 <Col>
-                  <Form id="login-form" onSubmit={handleLogin}>
+                  <Form onSubmit={handleLogin}>
                     <Form.Group className="mb-3" controlId="formGroupUsername">
                       <Form.Label>Username</Form.Label>
-                      <Form.Control type="text" value={username} name="username" onChange={({target}) => setUsername(target.value)} placeholder="Username" />
+                      <Form.Control id="username"type="text" value={username} name="username" onChange={({target}) => setUsername(target.value)} placeholder="Username" />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formGroupPassword">
                       <Form.Label>Password</Form.Label>
-                      <Form.Control type="password" value={password} name= "password" onChange={({ target }) => setPassword(target.value)} placeholder="Password" />
+                      <Form.Control id="password" type="password" value={password} name= "password" onChange={({ target }) => setPassword(target.value)} placeholder="Password" />
                     </Form.Group>
-                    <Button variant="primary" type="submit">Entrar</Button>
+                    <Button id="login-submit"variant="primary" type="submit">Entrar</Button>
                   </Form>
                 </Col>
             </Row>
