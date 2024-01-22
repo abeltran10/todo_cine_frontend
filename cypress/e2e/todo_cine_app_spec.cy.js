@@ -13,7 +13,7 @@ describe('Todo cine', function() {
         cy.contains('Entrar')
       })
 
-      describe('Login',function() {
+    describe('Login',function() {
         it('succeeds with correct credentials', function() {
           cy.get('#username').type('userTest')
           cy.get('#password').type('1234')
@@ -21,11 +21,24 @@ describe('Todo cine', function() {
           cy.contains('Signed as userTest')
         })
     
-      it('fails with wrong credentials', function() {
+        it('fails with wrong credentials', function() {
           cy.get('#username').type('mr. x')
           cy.get('#password').type('xxxx')
           cy.get('#login-submit').click()
           cy.contains('Usuario o contraseña incorrectos')
+        })
+      })
+
+      describe.only('When logged in', function() {
+        beforeEach(function() {
+          cy.login({ username: 'userTest', password: '1234' })
+        })
+
+        it('search movie', function() {
+          cy.get('#moviename').type('star wars')
+          cy.get('#search-submit').click()
+          cy.contains('Detalle')
+          cy.get('#page-1').contains('1')
         })
       })
     })

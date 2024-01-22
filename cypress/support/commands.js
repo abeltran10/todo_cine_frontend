@@ -27,7 +27,17 @@
 
 Cypress.Commands.add('login', (user) => {
     cy.request('POST', 'http://localhost:8082/app/login', user).then(response => {
-      localStorage.setItem('loggedUserMovie', JSON.stringify(response.body))
+      localStorage.setItem('loggedUserToken', response.headers.authorization)
+    }).then(() => {
+      cy.request({
+        method: 'GET',
+        url: 'http://localhost:8082/app/usuario/username/userTest',
+        headers: {
+          Authorization: localStorage.getItem('loggedUserToken')
+        }
+      }).then(response => {
+        localStorage.setItem('loggedUserMovie', JSON.stringify(response.body))
+      })
     })
   
     cy.visit('http://localhost:3000')

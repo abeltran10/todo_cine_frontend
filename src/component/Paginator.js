@@ -12,14 +12,15 @@ const Paginator = ({functionSearch, param, pageNumbers}) => {
     
     let paginationItems = [];
     if (pageNumbers) {
-      for (let number = 1; number <= pageNumbers; number++) 
+      for (let number = 1; number <= pageNumbers; number++) {
+        let id = `page-${number}`
         paginationItems.push(
-         <Pagination.Item key={number} active={number === activePage} onClick={() => handleShowNewPage(number)}>
-          {number}
-        </Pagination.Item>
-      );
-    }
-
+          <Pagination.Item id={id} key={number} active={number === activePage} onClick={() => handleShowNewPage(number)}>
+            {number}
+          </Pagination.Item>
+        )
+      }
+    }       
 
     const handleShowNewPage = async (page) => {
       await functionSearch(param, page)
@@ -87,7 +88,7 @@ const Paginator = ({functionSearch, param, pageNumbers}) => {
       <Container className='p-3 mb-2' fluid="md">
         <Row className="justify-content-md-center">
           <Col>
-            <Pagination>
+            <Pagination id="pagination">
               <Pagination.First onClick={() => handleFirst()} />
               <Pagination.Prev onClick={() => handlePrev()} /> 
               {showPaginationNumbers()}
