@@ -38,7 +38,7 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
                     <br/>
-                    {showAddButton ? <Row><Container><Button variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row> : 
+                    {showAddButton ? <Row><Container><Button className="addFavsButton" variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row> : 
                             <Row><Container><Button variant="secondary" type="button" onClick={handleRemoveFav}>Quitar de favoritos</Button></Container></Row> }
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>

@@ -22,7 +22,7 @@ const MovieCard = ({movie, loadMovieDetail}) => {
             <Card.Text>
               {movie.overview}
             </Card.Text>
-            <Button variant="primary" onClick={() => handleLoadMovieDetail(movie.id)}>Detalle</Button>
+            <Button className="detalleButton" variant="primary" onClick={() => handleLoadMovieDetail(movie.id)}>Detalle</Button>
           </Card.Body>
       </Card>      
   )

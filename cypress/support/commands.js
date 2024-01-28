@@ -26,12 +26,12 @@
 
 
 Cypress.Commands.add('login', (user) => {
-    cy.request('POST', 'http://localhost:8082/app/login', user).then(response => {
+    cy.request('POST', 'http://localhost:8080/app/login', user).then(response => {
       localStorage.setItem('loggedUserToken', response.headers.authorization)
     }).then(() => {
       cy.request({
         method: 'GET',
-        url: 'http://localhost:8082/app/usuario/username/userTest',
+        url: 'http://localhost:8080/app/usuario/username/userTest',
         headers: {
           Authorization: localStorage.getItem('loggedUserToken')
         }

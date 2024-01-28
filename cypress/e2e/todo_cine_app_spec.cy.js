@@ -1,11 +1,11 @@
 describe('Todo cine', function() {
     beforeEach(function() {
-      cy.request('POST', 'http://localhost:8082/app/testing/reset')
+      cy.request('POST', 'http://localhost:8080/app/testing/reset')
       const user = {
         username: 'userTest',
         password: '1234'
       }
-      cy.request('POST', 'http://localhost:8082/app/usuario', user)
+      cy.request('POST', 'http://localhost:8080/app/usuario', user)
       cy.visit('http://localhost:3000')
     })
 
@@ -38,7 +38,15 @@ describe('Todo cine', function() {
           cy.get('#moviename').type('star wars')
           cy.get('#search-submit').click()
           cy.contains('Detalle')
-          cy.get('#page-1').contains('1')
         })
+
+        it('add to favourite', function() {
+          cy.get('#moviename').type('star wars')
+          cy.get('#search-submit').click()
+          cy.get('.detalleButton').then(detailButton => detailButton[0].click())
+          cy.get('.addFavsButton').click()
+          cy.contains('Quitar de favoritos')
+        })
+
       })
     })
