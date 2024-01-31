@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -6,7 +6,13 @@ import Col from 'react-bootstrap/Col'
 import Image from 'react-bootstrap/Image'
 import  Button from 'react-bootstrap/Button'
 
+
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faStar as solidStar} from '@fortawesome/free-solid-svg-icons'
+import {faStar as regularStar} from '@fortawesome/free-regular-svg-icons'
+
 const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
+    const [vote, setVote] = useState(0)
 
     const showAddButton = (userFavs.length === 0)
 
@@ -22,6 +28,22 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
 
     const handleRemoveFav = async () => {
         await removeFavoritos(movie.id)
+    }
+
+    const rating = () => {
+
+        const handleVote = async (rate) => {
+            //await vote(rate, movie)
+
+            setVote((vote !== rate ) ? rate : 0)
+        }
+
+        const starsRating = []
+        for (let i=1; i <= 5; i++)
+            starsRating.push(<FontAwesomeIcon key={i} icon={(i <= vote) ? solidStar : regularStar } onClick={() => handleVote(i)}/>)
+
+        return (starsRating)
+        
     }
     
     return (
@@ -43,9 +65,15 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
                     <br/>
+                    <Row>
+                        <Container>
+                        <span className="fw-bold fst-italic">Valora:</span>  {rating()}
+                        </Container>
+                    </Row>
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Votos totales:</span> {movie.vote_count}</Container></Row>
                     <Row><Container><span className="fw-bold fst-italic">Puntuación:</span> {movie.vote_average}</Container></Row>
+                    
                 </Col>
             </Row>
 
