@@ -25,7 +25,7 @@ const addFavsByUserId = async (id, movie) => {
     headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
   }
 
-  const response = await axios.put(`${baseUrl}/${id}/favs`, movie, config)
+  const response = await axios.post(`${baseUrl}/${id}/favs`, movie, config)
   return response.data  
 }
 

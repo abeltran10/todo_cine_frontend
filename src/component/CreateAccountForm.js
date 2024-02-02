@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
 
 const CreateAccountForm = ({ createUser }) => {
   const [username, setUsername] = useState('')
@@ -49,7 +50,7 @@ const CreateAccountForm = ({ createUser }) => {
             </Row>
             <br />
             <br/>
-            {(passConfirm !== '' && (password !== passConfirm)) ? <Row><Col className='bg-danger'><p>Las contraseñas no coinciden</p></Col></Row> : <></>}
+            {(passConfirm !== '' && (password !== passConfirm)) ? <Row><Card className='bg-warning' body>Las contraseñas no coinciden</Card></Row> : <></>}
           </Container>   
    
   )

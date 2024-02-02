@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -6,7 +6,15 @@ import Col from 'react-bootstrap/Col'
 import Image from 'react-bootstrap/Image'
 import  Button from 'react-bootstrap/Button'
 
-const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
+
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faStar as solidStar} from '@fortawesome/free-solid-svg-icons'
+import {faStar as regularStar} from '@fortawesome/free-regular-svg-icons'
+
+const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVote }) => {
+    const currentVote = (userVote.length !== 0) ? userVote[0].voto : 0
+
+    const [vote, setVote] = useState(currentVote)
 
     const showAddButton = (userFavs.length === 0)
 
@@ -23,6 +31,23 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
     const handleRemoveFav = async () => {
         await removeFavoritos(movie.id)
     }
+
+    const handleVote = async (rate) => {
+        const r = (vote !== rate ) ? rate : 0
+        const voteId = (userVote.length !== 0) ? userVote[0].id : null
+        await addVote(movie.id, voteId, r)
+
+        setVote(r)
+    }
+
+    const rating = () => {
+        const starsRating = []
+        for (let i=1; i <= 5; i++)
+            starsRating.push(<FontAwesomeIcon key={i} icon={(i <= vote) ? solidStar : regularStar } onClick={() => handleVote(i)}/>)
+
+        return (starsRating)
+        
+    }
     
     return (
         <Container>
@@ -38,14 +63,31 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
                     <br/>
-                    {showAddButton ? <Row><Container><Button variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row> : 
+                    {showAddButton ? <Row><Container><Button className="addFavsButton" variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row> : 
                             <Row><Container><Button variant="secondary" type="button" onClick={handleRemoveFav}>Quitar de favoritos</Button></Container></Row> }
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
                     <br/>
+                    <Row>
+                        <Container>
+                            <span className="fw-bold fst-italic">Valora:</span>  {rating()}
+                        </Container>
+                    </Row>
+                    <Row>
+                        <Container>
+                            <span className="fw-bold fst-italic">Total votos Todo Cine:</span>  {movie.total_votos_TC}
+                        </Container>
+                    </Row>
+                    <Row>
+                        <Container>
+                            <span className="fw-bold fst-italic">Puntuación TC:</span>  {movie.votos_media_TC}
+                        </Container>
+                    </Row>
+                    <br/>
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Votos totales:</span> {movie.vote_count}</Container></Row>
                     <Row><Container><span className="fw-bold fst-italic">Puntuación:</span> {movie.vote_average}</Container></Row>
+                    
                 </Col>
             </Row>
 

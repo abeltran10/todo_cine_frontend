@@ -24,9 +24,9 @@ const SearchForm = ({ search }) => {
                     <Form onSubmit={handleSearch}>
                       <Form.Group className="mb-3" controlId="formGroupSearch">
                         <Form.Label>Busca película</Form.Label>
-                        <Form.Control type="text" value={text} name="moviename" onChange={({target}) => setText(target.value)} placeholder="Busca película" />
+                        <Form.Control id="moviename" type="text" value={text} name="moviename" onChange={({target}) => setText(target.value)} placeholder="Busca película" />
                       </Form.Group>
-                      <Button variant="primary" type="submit">
+                      <Button id='search-submit' variant="primary" type="submit">
                           Busca
                       </Button>
                     </Form>

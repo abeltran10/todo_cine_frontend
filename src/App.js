@@ -287,6 +287,20 @@ const App = () => {
 
   }
 
+  const addVote = async (movieId, userVoteId, rating) => {
+    const vote = {id: userVoteId, usuario: user.id, movie: movieId, voto: rating}
+
+    try {
+      const peli = await movieService.votar(movieId, userVoteId, vote)
+      setMovieDetail(peli)
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+    
+  }
+
   const showHeader = () => {
     if (user === null)
       return (<h1 className='text-info text-center'>TODO CINE</h1>)
@@ -316,7 +330,8 @@ const App = () => {
         return (<div><Profile usuario={user} updateUser={updateUser} removeFavoritos={removeFavoritos}/></div>)
       
       else if (movieDetail)
-        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.id === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} removeFavoritos={removeFavoritos}/></div>)
+        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.id === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} 
+                    removeFavoritos={removeFavoritos} addVote={addVote} userVote={movieDetail.votos.filter(v => v.usuario.id === user.id)}/></div>)
       
       else if (showSearchForm)
           return (<div>
