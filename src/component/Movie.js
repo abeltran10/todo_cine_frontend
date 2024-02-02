@@ -11,8 +11,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faStar as solidStar} from '@fortawesome/free-solid-svg-icons'
 import {faStar as regularStar} from '@fortawesome/free-regular-svg-icons'
 
-const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
-    const [vote, setVote] = useState(0)
+const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVote }) => {
+    const currentVote = (userVote.length !== 0) ? userVote[0].voto : 0
+
+    const [vote, setVote] = useState(currentVote)
 
     const showAddButton = (userFavs.length === 0)
 
@@ -30,14 +32,15 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
         await removeFavoritos(movie.id)
     }
 
+    const handleVote = async (rate) => {
+        const r = (vote !== rate ) ? rate : 0
+        const voteId = (userVote.length !== 0) ? userVote[0].id : null
+        await addVote(movie.id, voteId, r)
+
+        setVote(r)
+    }
+
     const rating = () => {
-
-        const handleVote = async (rate) => {
-            //await vote(rate, movie)
-
-            setVote((vote !== rate ) ? rate : 0)
-        }
-
         const starsRating = []
         for (let i=1; i <= 5; i++)
             starsRating.push(<FontAwesomeIcon key={i} icon={(i <= vote) ? solidStar : regularStar } onClick={() => handleVote(i)}/>)
@@ -67,9 +70,20 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos }) => {
                     <br/>
                     <Row>
                         <Container>
-                        <span className="fw-bold fst-italic">Valora:</span>  {rating()}
+                            <span className="fw-bold fst-italic">Valora:</span>  {rating()}
                         </Container>
                     </Row>
+                    <Row>
+                        <Container>
+                            <span className="fw-bold fst-italic">Total votos Todo Cine:</span>  {movie.total_votos_TC}
+                        </Container>
+                    </Row>
+                    <Row>
+                        <Container>
+                            <span className="fw-bold fst-italic">Puntuación TC:</span>  {movie.votos_media_TC}
+                        </Container>
+                    </Row>
+                    <br/>
                     <br/>
                     <Row><Container><span className="fw-bold fst-italic">Votos totales:</span> {movie.vote_count}</Container></Row>
                     <Row><Container><span className="fw-bold fst-italic">Puntuación:</span> {movie.vote_average}</Container></Row>
