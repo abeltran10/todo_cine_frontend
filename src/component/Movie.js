@@ -33,11 +33,10 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVo
     }
 
     const handleVote = async (rate) => {
-        const r = (vote !== rate ) ? rate : 0
         const voteId = (userVote.length !== 0) ? userVote[0].id : null
-        await addVote(movie.id, voteId, r)
+        await addVote(movie.id, voteId, rate)
 
-        setVote(r)
+        setVote(rate)
     }
 
     const rating = () => {
