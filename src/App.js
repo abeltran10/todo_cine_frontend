@@ -4,6 +4,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import CardGroup from 'react-bootstrap/CardGroup'
 import Card  from 'react-bootstrap/Card'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
+
 
 import LoginForm from './component/LoginForm'
 import Notification from './component/Notification'
@@ -324,7 +327,10 @@ const App = () => {
         return (<div><LoginForm login={login} handleCrearCuenta={handleCrearCuenta}/></div>)
 
       else if (user === null && showCrearCuenta)
-        return (<div><CreateAccountForm createUser={createUser} /></div>)
+        return (<div>
+                <NavigationBar user={null} logout={null} loadCartelera={null} loadFavs={null} loadProfile={null}/>
+                <CreateAccountForm createUser={createUser} />
+              </div>)
       
       else if (showProfile)
         return (<div><Profile usuario={user} updateUser={updateUser} removeFavoritos={removeFavoritos}/></div>)
