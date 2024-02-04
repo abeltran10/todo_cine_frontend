@@ -24,15 +24,13 @@ const NavigationBar = ({user, logout, loadCartelera, loadFavs, loadProfile}) => 
     loadProfile()
   }
 
-  const signed = (user) ? `Signed as ${user.username}` : null
-
   const logged = () => {
     return (
       <>
         <NavDropdown title="Cartelera" id="navbarScrollingDropdown">
           {Regions.getValues().map(k => <NavDropdown.Item key={k[0]} onClick={() => handleCartelera(k[1])}>{k[2]}</NavDropdown.Item>)}
         </NavDropdown>      
-        <NavDropdown title={signed} id="navbarScrollingDropdown">
+        <NavDropdown title={`Signed as ${user.username}`} id="navbarScrollingDropdown">
           <NavDropdown.Item href="#profile" onClick={handleProfile}>Perfil</NavDropdown.Item>
           <NavDropdown.Item href="#fav" onClick={() => handleFavs(user.id)}>Favoritos</NavDropdown.Item>
           <NavDropdown.Item href="#logout" onClick={handleLogout}>Log out</NavDropdown.Item>
