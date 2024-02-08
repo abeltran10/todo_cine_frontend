@@ -200,7 +200,12 @@ const App = () => {
   const addFavoritos = async (movie) => {    
     try {
       const response = await userService.addFavsByUserId(user.id, movie)
-      setUser(response)
+      setMovie(response)
+      const favs = user.favoritos;
+      favs.push(response)
+      const usuario = {...user, favoritos: favs}
+      setUser(usuario)
+      window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
       setSuccessMessage('Añadida película a favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
     } catch (error) {
