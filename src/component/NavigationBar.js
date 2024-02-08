@@ -46,7 +46,7 @@ const NavigationBar = ({user, logout, loadCartelera, loadFavs, loadProfile}) => 
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Nav>
-              <Nav.Link href="/app">Home</Nav.Link>{'  '}
+              <Nav.Link href="./">Home</Nav.Link>{'  '}
               {(user) ? logged() : <></>}
            </Nav>
           </Navbar.Collapse>
