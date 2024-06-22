@@ -33,17 +33,16 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVo
     }
 
     const handleVote = async (rate) => {
-        const r = (vote !== rate ) ? rate : 0
         const voteId = (userVote.length !== 0) ? userVote[0].id : null
-        await addVote(movie.id, voteId, r)
+        await addVote(movie.id, voteId, rate)
 
-        setVote(r)
+        setVote(rate)
     }
 
     const rating = () => {
         const starsRating = []
         for (let i=1; i <= 5; i++)
-            starsRating.push(<FontAwesomeIcon key={i} icon={(i <= vote) ? solidStar : regularStar } onClick={() => handleVote(i)}/>)
+            starsRating.push(<FontAwesomeIcon className={`voto-${i}`} key={i} icon={(i <= vote) ? solidStar : regularStar } onClick={() => handleVote(i)}/>)
 
         return (starsRating)
         
@@ -75,12 +74,12 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVo
                     </Row>
                     <Row>
                         <Container>
-                            <span className="fw-bold fst-italic">Total votos Todo Cine:</span>  {movie.total_votos_TC}
+                            <span id='total_votos' className="fw-bold fst-italic">Total votos Todo Cine:</span>  {movie.total_votos_TC}
                         </Container>
                     </Row>
                     <Row>
                         <Container>
-                            <span className="fw-bold fst-italic">Puntuación TC:</span>  {movie.votos_media_TC}
+                            <span id='votos_media' className="fw-bold fst-italic">Puntuación TC:</span>  {movie.votos_media_TC}
                         </Container>
                     </Row>
                     <br/>

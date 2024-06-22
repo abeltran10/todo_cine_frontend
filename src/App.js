@@ -4,6 +4,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import CardGroup from 'react-bootstrap/CardGroup'
 import Card  from 'react-bootstrap/Card'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
+
 
 import LoginForm from './component/LoginForm'
 import Notification from './component/Notification'
@@ -14,10 +17,12 @@ import NavigationBar from './component/NavigationBar'
 import Movie from './component/Movie'
 import CreateAccountForm from './component/CreateAccountForm'
 import Profile from './component/Profile'
+import Premio from './component/Premio';
 
 import loginService from './service/login'
 import movieService from './service/movie'
 import userService from './service/user'
+import premioService from './service/premio'
 
 
 
@@ -27,6 +32,7 @@ const App = () => {
   const [ user, setUser ] = useState(null)
   const [ movie, setMovie ] = useState(null)
   const [ movieDetail, setMovieDetail ] = useState(null)
+  const [ premio, setPremio ] = useState(null)
   const [ paramSearch, setParamSearch ] = useState('')
   const [ showSearchForm, setShowSearchForm ] = useState(false)
   const [ showCartelera, setShowCartelera ] = useState(false)
@@ -156,6 +162,41 @@ const App = () => {
 
   }
 
+  const showGridPremios = (categorias) => {
+    const row = []
+    if (categorias !== null) {
+      const length = categorias.length
+      let i = 0
+      while (i + 3 <= length) {
+        row.push(<Row key={i}><CardGroup>
+          <Premio key={categorias[i].movie.id} categoria={categorias[i]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={categorias[i + 1].movie.id} categoria={categorias[i + 1]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={categorias[i + 2].movie.id} categoria={categorias[i + 2]} loadMovieDetail={loadMovieDetail}/>
+          </CardGroup>
+        </Row>)
+        
+        i = i + 3
+      }
+        
+      if ( length - i === 1) {
+          row.push(<Row key={length - 1 }><CardGroup>
+            <Premio key={categorias[length - 1].movie.id} categoria={categorias[length - 1]} loadMovieDetail={loadMovieDetail} />
+            <Card></Card>
+            <Card></Card>
+            </CardGroup></Row>)
+      } else if (length - i === 2)  {
+        row.push(<Row key={length}><CardGroup>
+            <Premio key={categorias[length - 2].movie.id} categoria={categorias[length - 2]} loadMovieDetail={loadMovieDetail}/>
+            <Premio key={categorias[length - 1].movie.id} categoria={categorias[length - 1]} loadMovieDetail={loadMovieDetail}/>
+            <Card></Card>
+            </CardGroup></Row>)
+      }
+    }
+
+    return row
+
+  }
+
   const loadMovieDetail = async (id) => {
     
     try {
@@ -194,10 +235,36 @@ const App = () => {
     
   }
 
+  const loadPremios = async (codigo) => {
+    try {
+      const award = await premioService.getPremiosByCodigo(codigo)
+
+      setPremio(award)
+      setMovie(null)
+      setMovieDetail(null)
+      setShowSearchForm(false)
+      setShowFavoritos(false)
+      setShowCartelera(true)
+      setParamSearch(null)
+      setShowCrearCuenta(false)
+      setShowProfile(false)
+    } catch (error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+    
+  }
+
+
   const addFavoritos = async (movie) => {    
     try {
       const response = await userService.addFavsByUserId(user.id, movie)
-      setUser(response)
+      setMovie(response)
+      const favs = user.favoritos;
+      favs.push(response)
+      const usuario = {...user, favoritos: favs}
+      setUser(usuario)
+      window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
       setSuccessMessage('Añadida película a favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
     } catch (error) {
@@ -308,6 +375,8 @@ const App = () => {
       return (<h1 className='text-info text-center'>DETALLE</h1>)
     else if (showProfile)
       return (<h1 className='text-info text-center'>PERFIL</h1>)
+    else if (premio)
+      return (<h1 className='text-info text-center'>{premio.titulo}</h1>)
     else
       return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
    
@@ -319,12 +388,21 @@ const App = () => {
                      {showGridMovies(pelis)}
                  </Container>)
       }
+
+      const premios = (premio) => {
+        return (<Container className='p-3 mb-2' fluid="md">
+                    {showGridPremios(premio.categorias)}
+                  </Container>)
+      }
     
       if (user === null && !showCrearCuenta)
         return (<div><LoginForm login={login} handleCrearCuenta={handleCrearCuenta}/></div>)
 
       else if (user === null && showCrearCuenta)
-        return (<div><CreateAccountForm createUser={createUser} /></div>)
+        return (<div>
+                <NavigationBar user={null} logout={null} loadCartelera={null} loadFavs={null} loadProfile={null}/>
+                <CreateAccountForm createUser={createUser} />
+              </div>)
       
       else if (showProfile)
         return (<div><Profile usuario={user} updateUser={updateUser} removeFavoritos={removeFavoritos}/></div>)
@@ -342,6 +420,9 @@ const App = () => {
       
       else if (movie) 
         return (<div>{container(movie)}</div>)
+      
+      else if (premio) 
+        return (<div>{premios(premio)}</div>)
   }
 
   const showFooter = () => {      
@@ -355,7 +436,7 @@ const App = () => {
   
   return (
     <div>
-      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} loadFavs={loadFavs} loadProfile={loadProfile}/> : <></>}
+      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} loadPremios={loadPremios} loadFavs={loadFavs} loadProfile={loadProfile}/> : <></>}
       {showHeader()}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       {showBody()}
