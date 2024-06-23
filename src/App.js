@@ -23,6 +23,7 @@ import loginService from './service/login'
 import movieService from './service/movie'
 import userService from './service/user'
 import premioService from './service/premio'
+import { NULL } from 'sass';
 
 
 
@@ -99,6 +100,7 @@ const App = () => {
       window.localStorage.removeItem('loggedUserToken')
       window.localStorage.removeItem('loggedUserMovie')
 
+      setPremio(null)
       setUser(null)
       setMovie(null)
       setParamSearch(null)
@@ -202,6 +204,7 @@ const App = () => {
     try {
       const peli = await movieService.getMovieById(id)
 
+      setPremio(null)
       setMovieDetail(peli)
       setMovie(null)
       setParamSearch(null)
@@ -220,6 +223,7 @@ const App = () => {
     try {
       const pelis = await movieService.getMoviesPlayingNowByRegion(region, page)
 
+      setPremio(null)
       setMovie(pelis)
       setMovieDetail(null)
       setShowSearchForm(false)
@@ -293,6 +297,7 @@ const App = () => {
     try {
       const response = await userService.getUserFavs(userId, pagina)
       
+      setPremio(null)
       setMovie(response)
       setParamSearch(null)
       setMovieDetail(null)
@@ -309,6 +314,7 @@ const App = () => {
   }
 
   const loadProfile = () => {
+      setPremio(null)
       setMovie(null)
       setParamSearch(null)
       setMovieDetail(null)
@@ -376,7 +382,7 @@ const App = () => {
     else if (showProfile)
       return (<h1 className='text-info text-center'>PERFIL</h1>)
     else if (premio)
-      return (<h1 className='text-info text-center'>{premio.titulo}</h1>)
+      return (<h1 className='text-info text-center'>{premio.titulo.toUpperCase()}</h1>)
     else
       return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
    
