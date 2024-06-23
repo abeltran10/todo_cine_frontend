@@ -382,7 +382,7 @@ const App = () => {
     else if (showProfile)
       return (<h1 className='text-info text-center'>PERFIL</h1>)
     else if (premio)
-      return (<h1 className='text-info text-center'>{premio.titulo}</h1>)
+      return (<h1 className='text-info text-center'>{premio.titulo.toUpperCase()}</h1>)
     else
       return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
    
