@@ -35,19 +35,15 @@ const getMoviesPlayingNowByRegion = async (region, page) => {
   return response.data
 }
 
-const votar = async (movieId, userVoteId, vote) => {
+const votar = async (movieId, userId, vote) => {
   const config = {
     headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
   }
 
   let url = `${baseUrl}/${movieId}/vote`
   let response = null
-  if (userVoteId) {
-    response =  await axios.put(`${url}/${userVoteId}`, vote, config)
-  } else {
-    response =  await axios.post(`${url}`, vote, config)
-  }
-   
+  response =  await axios.put(`${url}/${userId}`, vote, config)
+     
   return response.data
 
 }
