@@ -265,8 +265,7 @@ const App = () => {
       const response = await userService.addFavsByUserId(user.id, movie)
       setMovie(response)
       const favs = user.favoritos;
-      favs.push(response)
-      const usuario = {...user, favoritos: favs}
+      const usuario = {...user, favoritos: favs.concat(response)}
       setUser(usuario)
       window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
       setSuccessMessage('Añadida película a favoritos')
