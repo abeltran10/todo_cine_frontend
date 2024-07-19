@@ -265,7 +265,7 @@ const App = () => {
       const response = await userService.addFavsByUserId(user.id, movie)
       setMovie(response)
       const favs = user.favoritos;
-      favs.push(response)
+      favs.concat(response)
       const usuario = {...user, favoritos: favs}
       setUser(usuario)
       window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
