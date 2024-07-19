@@ -27,6 +27,7 @@ const Profile = ({ usuario, updateUser, removeFavoritos }) => {
     }
 
     const showCard = (movie) => {
+        console.log('Movie', movie)
         const img = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
         const releaseDate = `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})`
 
@@ -49,9 +50,9 @@ const Profile = ({ usuario, updateUser, removeFavoritos }) => {
           let i = 0
           while (i + 3 <= length) {
             row.push(<Row key={i}><CardGroup>
-              {showCard(favoritos[i])}
-              {showCard(favoritos[i + 1])}
-              {showCard(favoritos[i + 2])}
+              {showCard(favoritos[i].movie)}
+              {showCard(favoritos[i + 1].movie)}
+              {showCard(favoritos[i + 2].movie)}
               </CardGroup>
             </Row>)
             
@@ -60,14 +61,14 @@ const Profile = ({ usuario, updateUser, removeFavoritos }) => {
             
           if ( length - i === 1) {
               row.push(<Row key={length - 1 }><CardGroup>
-                {showCard(favoritos[length - 1])}
+                {showCard(favoritos[length - 1].movie)}
                 <Card></Card>
                 <Card></Card>
                 </CardGroup></Row>)
           } else if (length - i === 2)  {
             row.push(<Row key={length}><CardGroup>
-                {showCard(favoritos[length - 2])}
-                {showCard(favoritos[length - 1])}
+                {showCard(favoritos[length - 2].movie)}
+                {showCard(favoritos[length - 1].movie)}
                 <Card></Card>
                 </CardGroup></Row>)
           }
