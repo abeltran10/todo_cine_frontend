@@ -282,7 +282,7 @@ const App = () => {
     try {
       await userService.removeFavsByUserId(user.id, movieId)
       
-      const favs = user.favoritos.filter(favs => favs.id !== movieId)
+      const favs = user.favoritos.filter(favs => favs.movie.id !== movieId)
       setUser({...user, favoritos: favs})
       setSuccessMessage('Eliminada película de favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
