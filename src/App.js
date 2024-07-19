@@ -414,7 +414,7 @@ const App = () => {
         return (<div><Profile usuario={user} updateUser={updateUser} removeFavoritos={removeFavoritos}/></div>)
       
       else if (movieDetail)
-        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.movieId === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} 
+        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.movie.id === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} 
                     removeFavoritos={removeFavoritos} addVote={addVote} userVote={movieDetail.votos.filter(v => v.usuarioId === user.id)}/></div>)
       
       else if (showSearchForm)
