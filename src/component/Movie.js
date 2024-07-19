@@ -12,6 +12,8 @@ import {faStar as solidStar} from '@fortawesome/free-solid-svg-icons'
 import {faStar as regularStar} from '@fortawesome/free-regular-svg-icons'
 
 const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVote }) => {
+    console.log(userFavs)
+    
     const currentVote = (userVote.length !== 0) ? userVote[0].voto : 0
 
     const [vote, setVote] = useState(currentVote)
