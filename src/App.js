@@ -264,8 +264,7 @@ const App = () => {
     try {
       const response = await userService.addFavsByUserId(user.id, movie)
       setMovie(response)
-      const addedFavs = {usuario: user.id, movie: response}
-      const usuario = {...user, favoritos: [...user.favoritos, addedFavs]}
+      const usuario = {...user, favoritos: [...user.favoritos, {movieId: response.id}]}
       setUser(usuario)
       window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
       setSuccessMessage('Añadida película a favoritos')
@@ -281,7 +280,7 @@ const App = () => {
     try {
       await userService.removeFavsByUserId(user.id, movieId)
       
-      const favs = user.favoritos.filter(favs => favs.movie.id !== movieId)
+      const favs = user.favoritos.filter(favs => favs.movieId !== movieId)
       setUser({...user, favoritos: favs})
       setSuccessMessage('Eliminada película de favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
@@ -360,7 +359,7 @@ const App = () => {
   }
 
   const addVote = async (movieId, rating) => {
-    const vote = {usuarioId: user.id, movieId: movieId, voto: rating}
+    const vote = {usuarioId: user.id, movieId, voto: rating}
 
     try {
       const peli = await movieService.votar(movieId, user.id, vote)
@@ -410,10 +409,10 @@ const App = () => {
               </div>)
       
       else if (showProfile)
-        return (<div><Profile usuario={user} updateUser={updateUser} removeFavoritos={removeFavoritos}/></div>)
+        return (<div><Profile usuario={user} updateUser={updateUser} /></div>)
       
       else if (movieDetail)
-        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.movie.id === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} 
+        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.movieId === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} 
                     removeFavoritos={removeFavoritos} addVote={addVote} userVote={movieDetail.votos.filter(v => v.usuarioId === user.id)}/></div>)
       
       else if (showSearchForm)
@@ -430,13 +429,14 @@ const App = () => {
         return (<div>{premios(premio)}</div>)
   }
 
-  const showFooter = () => {      
+  const showFooter = () => {     
     if (user && movie && !showCartelera && !showFavoritos)  
       return (<div><Paginator functionSearch={search} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
     else if (user && movie && showCartelera)
       return (<div><Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
     else if (user && movie && showFavoritos)
       return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movie.total_pages} /></div>)
+   
   }
   
   return (
