@@ -26,7 +26,7 @@ const NavigationBar = ({user, logout, loadCartelera, loadPremios, loadFavs, load
   }
 
   const handleProfile = () => {
-    loadProfile()
+     loadProfile()
   }
 
   const logged = () => {
