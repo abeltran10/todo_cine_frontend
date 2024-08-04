@@ -3,15 +3,15 @@ import Row from 'react-bootstrap/Row';
 import CardGroup from 'react-bootstrap/CardGroup'
 import Card  from 'react-bootstrap/Card'
 
-import NavigationBar from './component/NavigationBar'
-import CreateAccountForm from './component/CreateAccountForm'
-import LoginForm from './component/LoginForm'
-import Profile from './component/Profile'
-import Movie from './component/Movie'
-import SearchForm from './component/SearchForm'
-import Paginator from './component/Paginator'
-import MovieCard from './component/MovieCard'
-import Premio from './component/Premio'
+import NavigationBar from '../component/NavigationBar'
+import CreateAccountForm from '../component/CreateAccountForm'
+import LoginForm from '../component/LoginForm'
+import Profile from '../component/Profile'
+import Movie from '../component/Movie'
+import SearchForm from '../component/SearchForm'
+import Paginator from '../component/Paginator'
+import MovieCard from '../component/MovieCard'
+import Premio from '../component/Premio'
 
 const showHeader = (user, movieDetail, showProfile, premio) => {
     if (user === null)
