@@ -21,6 +21,7 @@ const App = () => {
   const [ movie, setMovie ] = useState(null)
   const [ movieDetail, setMovieDetail ] = useState(null)
   const [ premio, setPremio ] = useState(null)
+  const [ premioGanadores, setPremioGanadores] = useState(null)
   const [ paramSearch, setParamSearch ] = useState('')
   const [ showSearchForm, setShowSearchForm ] = useState(false)
   const [ showCartelera, setShowCartelera ] = useState(false)
@@ -53,22 +54,16 @@ const App = () => {
 
   const login = async (username, password) => {
     try {
-      const headers = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedUserToken', headers.getAuthorization())
+      const response = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedUserToken', response.headers.getAuthorization())
      
-      const response = userService.getByName(username)
+      const user = response.data
 
-      response.then(response => {
-          setUser(response)
-          setShowSearchForm(true)
-          setSuccessMessage('Iniciada sesión')
-          setTimeout(() => { setSuccessMessage(null) }, 5000)
-          window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
-      }).catch(error => {
-        setErrorMessage(error.response.data.message)
-        setTimeout(() => { setErrorMessage(null) }, 5000)
-      })
-        
+      setUser(user)
+      setShowSearchForm(true)
+      setSuccessMessage('Iniciada sesión')
+      setTimeout(() => { setSuccessMessage(null) }, 5000)
+      window.localStorage.setItem('loggedUserMovie', JSON.stringify(user))
     } catch (exception) {
       setErrorMessage('Usuario o contraseña incorrectos')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -88,6 +83,7 @@ const App = () => {
       window.localStorage.removeItem('loggedUserMovie')
 
       setPremio(null)
+      setPremioGanadores(null)
       setUser(null)
       setMovie(null)
       setParamSearch(null)
@@ -124,6 +120,7 @@ const App = () => {
       const peli = await movieService.getMovieById(id)
 
       setPremio(null)
+      setPremioGanadores(null)
       setMovieDetail(peli)
       setMovie(null)
       setParamSearch(null)
@@ -143,6 +140,7 @@ const App = () => {
       const pelis = await movieService.getMoviesPlayingNowByRegion(region, page)
 
       setPremio(null)
+      setPremioGanadores(null)
       setMovie(pelis)
       setMovieDetail(null)
       setShowSearchForm(false)
@@ -158,11 +156,12 @@ const App = () => {
     
   }
 
-  const loadPremios = async (codigo) => {
+  const loadPremio = async (premioCod, anyo) => {
     try {
-      const award = await premioService.getPremiosByCodigo(codigo)
+      const award = await premioService.getPremiosByCodigoAnyo(premioCod, anyo)
 
-      setPremio(award)
+      setPremioGanadores(award)
+      setPremio(null)
       setMovie(null)
       setMovieDetail(null)
       setShowSearchForm(false)
@@ -215,6 +214,7 @@ const App = () => {
       const response = await userService.getUserFavs(userId, pagina)
       
       setPremio(null)
+      setPremioGanadores(null)
       setMovie(response)
       setParamSearch(null)
       setMovieDetail(null)
@@ -232,6 +232,7 @@ const App = () => {
 
   const loadProfile = () => {
       setPremio(null)
+      setPremioGanadores(null)
       setMovie(null)
       setParamSearch(null)
       setMovieDetail(null)
@@ -291,15 +292,28 @@ const App = () => {
     
   }
 
+  const showPremio = (premio) => {
+    setPremio(premio)
+    setPremioGanadores(null)
+    setMovie(null)
+    setParamSearch(null)
+    setMovieDetail(null)
+    setShowSearchForm(false)
+    setShowFavoritos(true)
+    setShowCartelera(false)
+    setShowCrearCuenta(false)
+    setShowProfile(false)
+  }
+
   
   
   return (
     <div>
-      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} loadPremios={loadPremios} loadFavs={loadFavs} loadProfile={loadProfile}/> : <></>}
-      {utils.showHeader(user, movieDetail, showProfile, premio)}
+      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} showPremio={showPremio} loadFavs={loadFavs} loadProfile={loadProfile}/> : <></>}
+      {utils.showHeader(user, movieDetail, showProfile, premio, premioGanadores)}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
       {utils.showBody(user, showCrearCuenta, login, createUser, handleCrearCuenta, updateUser, showProfile, 
-                        movieDetail, loadMovieDetail, showSearchForm, movie, premio, addFavoritos, removeFavoritos, addVote,
+                        movieDetail, loadMovieDetail, showSearchForm, movie, premio, premioGanadores, loadPremio, addFavoritos, removeFavoritos, addVote,
                         search)}
       {utils.showFooter(user, movie, showCartelera, showFavoritos, search, paramSearch, loadCartelera, loadFavs)}
     </div>
