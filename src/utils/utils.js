@@ -101,9 +101,9 @@ const showHeader = (user, movieDetail, showProfile, premio, premioGanadores) => 
       let i = 0
       while (i + 3 <= length) {
         row.push(<Row key={i}><CardGroup>
-          <MovieCard key={movie.results[i].id} movie={movie.results[i]} loadMovieDetail={loadMovieDetail}/>
-          <MovieCard key={movie.results[i + 1].id} movie={movie.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
-          <MovieCard key={movie.results[i + 2].id} movie={movie.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={i} movie={movie.results[i]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={i + 1} movie={movie.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={i + 2} movie={movie.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
           </CardGroup>
         </Row>)
         
@@ -112,14 +112,14 @@ const showHeader = (user, movieDetail, showProfile, premio, premioGanadores) => 
         
       if ( length - i === 1) {
           row.push(<Row key={length - 1}><CardGroup>
-            <MovieCard key={movie.results[length - 1].id} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail} />
+            <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail} />
             <Card></Card>
             <Card></Card>
             </CardGroup></Row>)
       } else if (length - i === 2)  {
         row.push(<Row key={length - 2}><CardGroup>
-            <MovieCard key={movie.results[length - 2].id} movie={movie.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
-            <MovieCard key={movie.results[length - 1].id} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
+            <MovieCard key={length - 2} movie={movie.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
+            <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
             <Card></Card>
             </CardGroup></Row>)
       }
@@ -136,9 +136,9 @@ const showHeader = (user, movieDetail, showProfile, premio, premioGanadores) => 
       let i = 0
       while (i + 3 <= length) {
         row.push(<Row key={i}><CardGroup>
-          <Premio key={ganadores[i].movie.id} ganador={ganadores[i]} loadMovieDetail={loadMovieDetail}/>
-          <Premio key={ganadores[i + 1].movie.id} ganador={ganadores[i + 1]} loadMovieDetail={loadMovieDetail}/>
-          <Premio key={ganadores[i + 2].movie.id} ganador={ganadores[i + 2]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={i} ganador={ganadores[i]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={i + 1} ganador={ganadores[i + 1]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={i + 2} ganador={ganadores[i + 2]} loadMovieDetail={loadMovieDetail}/>
           </CardGroup>
         </Row>)
         
@@ -147,14 +147,14 @@ const showHeader = (user, movieDetail, showProfile, premio, premioGanadores) => 
         
       if ( length - i === 1) {
           row.push(<Row key={length - 1}><CardGroup>
-            <Premio key={ganadores[length - 1].movie.id} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail} />
+            <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail} />
             <Card></Card>
             <Card></Card>
             </CardGroup></Row>)
       } else if (length - i === 2)  {
         row.push(<Row key={length - 2}><CardGroup>
-            <Premio key={ganadores[length - 2].movie.id} ganador={ganadores[length - 2]} loadMovieDetail={loadMovieDetail}/>
-            <Premio key={ganadores[length - 1].movie.id} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail}/>
+            <Premio key={length - 2} ganador={ganadores[length - 2]} loadMovieDetail={loadMovieDetail}/>
+            <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail}/>
             <Card></Card>
             </CardGroup></Row>)
       }
@@ -169,7 +169,7 @@ const showHeader = (user, movieDetail, showProfile, premio, premioGanadores) => 
     
     const card = (i) => {
       console.log("entra")
-      return ( <div>
+      return ( <div key={i}>
                    <Card style={{ width: '18rem' }}>
                      <Card.Body>
                        <Card.Title>{premio[2][i]}</Card.Title>
