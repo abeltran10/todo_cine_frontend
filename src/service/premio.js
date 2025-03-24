@@ -2,14 +2,14 @@ import axios from 'axios'
 
 const baseUrl = '/app/premio'
 
-const getPremiosByCodigo = async (codigo) => {
+const getPremiosByCodigoAnyo = async (premioCod, anyo) => {
     const config = {
       headers: {Authorization: window.localStorage.getItem('loggedUserToken')}
     }
   
-    const response = await axios.get(`${baseUrl}/${codigo}`, config)
+    const response = await axios.get(`${baseUrl}/${premioCod}/anyo/${anyo}`, config)
     return response.data
 }
 
 
-export default {getPremiosByCodigo}
+export default {getPremiosByCodigoAnyo}

@@ -1,5 +1,5 @@
 const Award = {
-    GOYA: [1, 'Goya'],
+    GOYA: [1, 'Goya', [2024, 2025]],
     
 }
 
