@@ -11,6 +11,7 @@ import userService from './service/user'
 import premioService from './service/premio'
 
 import utils from './utils/utils'
+import Awards from './enums/Awards'
 
 
 
@@ -51,6 +52,17 @@ const App = () => {
         })
     }
  }, []) 
+
+ useEffect(() => {
+    const response = premioService.getPremios()
+    response.then(response => {
+        Awards.setValues(response)    
+    }).catch(error => {
+        setErrorMessage('No se han podido cargar los premios')
+        setTimeout(() => { setErrorMessage(null) }, 5000)
+    })
+ 
+  }, [])
 
   const login = async (username, password) => {
     try {

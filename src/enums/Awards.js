@@ -1,6 +1,5 @@
 const Award = {
-    GOYA: [1, 'Goya', [2024, 2025]],
-    
+        
 }
 
 const getValues = () => {
@@ -9,4 +8,11 @@ const getValues = () => {
     return keys
  }
 
-export default { getValues }
+ const setValues = premios => {
+    premios.forEach(p => {
+        const titulo = p.titulo.toUpperCase()
+        Award[titulo] = [p.id, p.titulo, p.anyos]
+    });
+ }
+
+export default { getValues, setValues }

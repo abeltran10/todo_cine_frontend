@@ -11,5 +11,10 @@ const getPremiosByCodigoAnyo = async (premioCod, anyo) => {
     return response.data
 }
 
+const getPremios = () => {
+    const response = axios.get(`${baseUrl}`)
+    return response.then(response => response.data)  
+}
 
-export default {getPremiosByCodigoAnyo}
+
+export default {getPremiosByCodigoAnyo, getPremios}
