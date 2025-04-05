@@ -14,211 +14,251 @@ import Paginator from '../component/Paginator'
 import MovieCard from '../component/MovieCard'
 import Premio from '../component/Premio'
 
-const showHeader = (user, movieDetail, showProfile, premio, premioGanadores) => {
-    if (user === null)
-      return (<h1 className='text-info text-center'>TODO CINE</h1>)
-    else if (movieDetail)
-      return (<h1 className='text-info text-center'>DETALLE</h1>)
-    else if (showProfile)
-      return (<h1 className='text-info text-center'>PERFIL</h1>)
-    else if (premio)
-      return (<h1 className='text-info text-center'>{premio[1].toUpperCase()}</h1>)
-    else if (premioGanadores)
-      return (<h1 className='text-info text-center'>{premioGanadores[0].premio.toUpperCase()}</h1>)
-    else
-      return (<h1 className='text-info text-center'>PELÍCULAS</h1>)
-   
-  }
+const showHeader = ({ user, movieState, uiState }) => {
+  const { movieDetail, premio, premioGanadores } = movieState
+  const { showProfile } = uiState
 
-  const showBody = (user, showCrearCuenta, login, createUser, handleCrearCuenta, updateUser, showProfile, 
-                        movieDetail, loadMovieDetail, showSearchForm, movie, premio, premioGanadores, loadPremio, addFavoritos, removeFavoritos, addVote,
-                        search) => {
-      const container = (pelis) => {
-                  return (<Container className='p-3 mb-2' fluid="md">
-                     {showGridMovies(pelis, loadMovieDetail)}
-                 </Container>)
-      }
+  if (!user) 
+    return <h1 className='text-info text-center'>TODO CINE</h1>
+  else if (movieDetail)
+     return <h1 className='text-info text-center'>DETALLE</h1>
+  else if (showProfile) 
+    return <h1 className='text-info text-center'>PERFIL</h1>
+  else if (premio) 
+    return <h1 className='text-info text-center'>{premio[1].toUpperCase()}</h1>
+  else if (premioGanadores) 
+    return <h1 className='text-info text-center'>{premioGanadores[0].premio.toUpperCase()}</h1>
+  
+  return <h1 className='text-info text-center'>PELÍCULAS</h1>
+}
 
-      const ganadores = (ganadores) => {
-        return (<Container className='p-3 mb-2' fluid="md">
-                    {showGridGanadores(ganadores, loadMovieDetail)}
-                  </Container>)
-      }
+const showBody = ({ user, uiState, movieState, handlers }) => {
+  const {
+    showCrearCuenta,
+    showProfile,
+    showSearchForm
+  } = uiState
 
-      const showPremio = (premio) => {
-        return (<Container className='p-3 mb-2' fluid="md">
-                    {showGridPremio(premio, loadPremio)}
-                  </Container>)
-      }
-    
-      if (user === null && !showCrearCuenta)
-        return (<div><LoginForm login={login} handleCrearCuenta={handleCrearCuenta}/></div>)
+  const {
+    movie,
+    movieDetail,
+    premio,
+    premioGanadores
+  } = movieState
 
-      else if (user === null && showCrearCuenta)
-        return (<div>
-                <NavigationBar user={null} logout={null} loadCartelera={null} loadFavs={null} loadProfile={null}/>
-                <CreateAccountForm createUser={createUser} />
-              </div>)
+  const {
+    login,
+    createUser,
+    handleCrearCuenta,
+    updateUser,
+    loadMovieDetail,
+    loadPremio,
+    addFavoritos,
+    removeFavoritos,
+    addVote,
+    search
+  } = handlers
+
+  const container = (pelis) => (
+    <Container className='p-3 mb-2' fluid="md">
+      {showGridMovies(pelis, loadMovieDetail)}
+    </Container>
+  )
+
+  const ganadores = (ganadores) => (
+    <Container className='p-3 mb-2' fluid="md">
+      {showGridGanadores(ganadores, loadMovieDetail)}
+    </Container>
+  )
+
+  const showPremio = (premio) => (
+    <Container className='p-3 mb-2' fluid="md">
+      {showGridPremio(premio, loadPremio)}
+    </Container>
+  )
+
+  if (!user && !showCrearCuenta)
+    return <div><LoginForm login={login} handleCrearCuenta={handleCrearCuenta} /></div>
+
+  if (!user && showCrearCuenta)
+    return (
+      <div>
+        <NavigationBar />
+        <CreateAccountForm createUser={createUser} />
+      </div>
+    )
+
+  if (showProfile)
+    return <Profile usuario={user} updateUser={updateUser} />
+
+  if (movieDetail)
+    return (
+      <Movie
+        userFavs={user.favoritos.filter(fav => fav.movieId === movieDetail.id)}
+        movie={movieDetail}
+        addFavoritos={addFavoritos}
+        removeFavoritos={removeFavoritos}
+        addVote={addVote}
+        userVote={movieDetail.votos.filter(v => v.usuarioId === user.id)}
+      />
+    )
+
+  if (showSearchForm)
+    return (
+      <div>
+        <SearchForm search={search} />
+        {movie ? container(movie) : null}
+      </div>
+    )
+
+  if (movie) return container(movie)
+  if (premioGanadores) return ganadores(premioGanadores)
+  if (premio) return showPremio(premio)
+}
+
+const showFooter = ({ user, movieState, uiState, handlers }) => {
+  const { movie, paramSearch } = movieState
+  const { showCartelera, showFavoritos } = uiState
+  const { search, loadCartelera, loadFavs } = handlers
+
+  if (!user || !movie) return null
+
+  if (!showCartelera && !showFavoritos)
+    return <Paginator functionSearch={search} param={paramSearch} pageNumbers={movie.total_pages} />
+
+  if (showCartelera)
+    return <Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movie.total_pages} />
+
+  if (showFavoritos)
+    return <Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movie.total_pages} />
+}
+
+
+
+const showGridMovies = (movie, loadMovieDetail) => {
+  const row = []
+  if (movie !== null) {
+    const length = movie.results.length
+    let i = 0
+    while (i + 3 <= length) {
+      row.push(<Row key={i}><CardGroup>
+        <MovieCard key={i} movie={movie.results[i]} loadMovieDetail={loadMovieDetail}/>
+        <MovieCard key={i + 1} movie={movie.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
+        <MovieCard key={i + 2} movie={movie.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
+        </CardGroup>
+      </Row>)
       
-      else if (showProfile)
-        return (<div><Profile usuario={user} updateUser={updateUser} /></div>)
-      
-      else if (movieDetail)
-        return (<div><Movie userFavs={user.favoritos.filter(fav => fav.movieId === movieDetail.id)} movie={movieDetail} addFavoritos={addFavoritos} 
-                    removeFavoritos={removeFavoritos} addVote={addVote} userVote={movieDetail.votos.filter(v => v.usuarioId === user.id)}/></div>)
-      
-      else if (showSearchForm)
-          return (<div>
-                    <div><SearchForm search={search} /></div>
-                    {(movie) ? container(movie) : <></>}
-                  </div>
-                  )
-      
-      else if (movie) 
-        return (<div>{container(movie)}</div>)
-      
-      else if (premioGanadores) 
-        return (<div>{ganadores(premioGanadores)}</div>)
-      
-      else if (premio)
-        return (<div>{showPremio(premio)}</div>)
-  }
-
-  const showFooter = (user, movie, showCartelera, showFavoritos, search, paramSearch, loadCartelera, loadFavs) => {     
-    if (user && movie && !showCartelera && !showFavoritos)  
-      return (<div><Paginator functionSearch={search} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
-    else if (user && movie && showCartelera)
-      return (<div><Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movie.total_pages} /></div>)
-    else if (user && movie && showFavoritos)
-      return (<div><Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movie.total_pages} /></div>)
-   
-  }
-
-  const showGridMovies = (movie, loadMovieDetail) => {
-    const row = []
-    if (movie !== null) {
-      const length = movie.results.length
-      let i = 0
-      while (i + 3 <= length) {
-        row.push(<Row key={i}><CardGroup>
-          <MovieCard key={i} movie={movie.results[i]} loadMovieDetail={loadMovieDetail}/>
-          <MovieCard key={i + 1} movie={movie.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
-          <MovieCard key={i + 2} movie={movie.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
-          </CardGroup>
-        </Row>)
-        
-        i = i + 3
-      }
-        
-      if ( length - i === 1) {
-          row.push(<Row key={length - 1}><CardGroup>
-            <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail} />
-            <Card></Card>
-            <Card></Card>
-            </CardGroup></Row>)
-      } else if (length - i === 2)  {
-        row.push(<Row key={length - 2}><CardGroup>
-            <MovieCard key={length - 2} movie={movie.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
-            <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
-            <Card></Card>
-            </CardGroup></Row>)
-      }
-    }
-
-    return row
-
-  }
-
-  const showGridGanadores = (ganadores, loadMovieDetail) => {
-    const row = []
-    if (ganadores !== null) {
-      const length = ganadores.length
-      let i = 0
-      while (i + 3 <= length) {
-        row.push(<Row key={i}><CardGroup>
-          <Premio key={i} ganador={ganadores[i]} loadMovieDetail={loadMovieDetail}/>
-          <Premio key={i + 1} ganador={ganadores[i + 1]} loadMovieDetail={loadMovieDetail}/>
-          <Premio key={i + 2} ganador={ganadores[i + 2]} loadMovieDetail={loadMovieDetail}/>
-          </CardGroup>
-        </Row>)
-        
-        i = i + 3
-      }
-        
-      if ( length - i === 1) {
-          row.push(<Row key={length - 1}><CardGroup>
-            <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail} />
-            <Card></Card>
-            <Card></Card>
-            </CardGroup></Row>)
-      } else if (length - i === 2)  {
-        row.push(<Row key={length - 2}><CardGroup>
-            <Premio key={length - 2} ganador={ganadores[length - 2]} loadMovieDetail={loadMovieDetail}/>
-            <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail}/>
-            <Card></Card>
-            </CardGroup></Row>)
-      }
-    }
-
-    return row
-
-  }
-
-  const showGridPremio = (premio, loadPremio) => {
-    console.log(premio[2]) 
-    
-    const card = (i) => {
-      console.log("entra")
-      return ( <div key={i}>
-                   <Card style={{ width: '18rem' }}>
-                     <Card.Body>
-                       <Card.Title>{premio[2][i]}</Card.Title>
-                       <Button className="detalleButton" variant="primary" onClick={() => loadPremio(premio[0], premio[2][i])}>Detalle</Button>
-                     </Card.Body>
-                    </Card>  
-              </div>
-               
-             )
-     }
-    
-    
-     const row = []
-     const anyos = premio[2].length
-     let i = 0
-     while (i + 3 <= anyos) {
-        row.push(
-            <Row key={i}>      
-            <CardGroup>
-                {card(i)}
-                {card(i + 1)}
-                {card (i + 2)}
-            </CardGroup>
-          </Row>  
-        )
-
       i = i + 3
-     }
-
-     if (anyos - i === 1) { 
-        row.push(
-            <Row key={anyos - 1}>      
-            <CardGroup>
-                {card(anyos - 1)}
-            </CardGroup>
-          </Row> 
-        ) 
-     } else if (anyos - i === 2) {
-        row.push(
-            <Row key={anyos - 2}>      
-            <CardGroup>
-                {card(anyos - 2)}
-                {card(anyos - 1)}
-            </CardGroup>
-          </Row> 
-        ) 
-     }
-     
-      return row
+    }
+      
+    if ( length - i === 1) {
+        row.push(<Row key={length - 1}><CardGroup>
+          <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail} />
+          <Card></Card>
+          <Card></Card>
+          </CardGroup></Row>)
+    } else if (length - i === 2)  {
+      row.push(<Row key={length - 2}><CardGroup>
+          <MovieCard key={length - 2} movie={movie.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
+          <Card></Card>
+          </CardGroup></Row>)
+    }
   }
+
+  return row
+
+}
+
+const showGridGanadores = (ganadores, loadMovieDetail) => {
+  const row = []
+  if (ganadores !== null) {
+    const length = ganadores.length
+    let i = 0
+    while (i + 3 <= length) {
+      row.push(<Row key={i}><CardGroup>
+        <Premio key={i} ganador={ganadores[i]} loadMovieDetail={loadMovieDetail}/>
+        <Premio key={i + 1} ganador={ganadores[i + 1]} loadMovieDetail={loadMovieDetail}/>
+        <Premio key={i + 2} ganador={ganadores[i + 2]} loadMovieDetail={loadMovieDetail}/>
+        </CardGroup>
+      </Row>)
+      
+      i = i + 3
+    }
+      
+    if ( length - i === 1) {
+        row.push(<Row key={length - 1}><CardGroup>
+          <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail} />
+          <Card></Card>
+          <Card></Card>
+          </CardGroup></Row>)
+    } else if (length - i === 2)  {
+      row.push(<Row key={length - 2}><CardGroup>
+          <Premio key={length - 2} ganador={ganadores[length - 2]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail}/>
+          <Card></Card>
+          </CardGroup></Row>)
+    }
+  }
+
+  return row
+
+}
+
+const showGridPremio = (premio, loadPremio) => {
+  console.log(premio[2]) 
+  
+  const card = (i) => {
+    
+    return <div>
+                  <Card style={{ width: '18rem' }}>
+                    <Card.Body>
+                      <Card.Title>{premio[2][i]}</Card.Title>
+                      <Button className="detalleButton" variant="primary" onClick={() => loadPremio(premio[0], premio[2][i])}>Detalle</Button>
+                    </Card.Body>
+                  </Card>  
+            </div>
+              
+    }
+  
+  
+    const row = []
+    const anyos = premio[2].length
+    let i = 0
+    while (i + 3 <= anyos) {
+      row.push(
+          <Row key={i}>      
+          <CardGroup>
+              {card(i)}
+              {card(i + 1)}
+              {card (i + 2)}
+          </CardGroup>
+        </Row>  
+      )
+
+    i = i + 3
+    }
+
+    if (anyos - i === 1) { 
+      row.push(
+          <Row key={anyos - 1}>      
+          <CardGroup>
+              {card(anyos - 1)}
+          </CardGroup>
+        </Row> 
+      ) 
+    } else if (anyos - i === 2) {
+      row.push(
+          <Row key={anyos - 2}>      
+          <CardGroup>
+              {card(anyos - 2)}
+              {card(anyos - 1)}
+          </CardGroup>
+        </Row> 
+      ) 
+    }
+    
+    return row
+ }
 
   export default { showHeader, showBody, showFooter }

@@ -16,8 +16,6 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVo
     
     const currentVote = (userVote.length !== 0) ? userVote[0].voto : 0
 
-    const [vote, setVote] = useState(currentVote)
-
     const showAddButton = (userFavs.length === 0)
 
     const img = (movie.poster_path) ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : null
@@ -36,14 +34,12 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVo
 
     const handleVote = async (rate) => {
         await addVote(movie.id, rate)
-
-        setVote(rate)
     }
 
     const rating = () => {
         const starsRating = []
         for (let i=1; i <= 5; i++)
-            starsRating.push(<FontAwesomeIcon className={`voto-${i}`} key={i} icon={(i <= vote) ? solidStar : regularStar } onClick={() => handleVote(i)}/>)
+            starsRating.push(<FontAwesomeIcon className={`voto-${i}`} key={i} icon={(i <= currentVote) ? solidStar : regularStar } onClick={() => handleVote(i)}/>)
 
         return (starsRating)
         

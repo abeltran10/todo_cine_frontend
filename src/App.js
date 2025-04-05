@@ -9,6 +9,7 @@ import loginService from './service/login'
 import movieService from './service/movie'
 import userService from './service/user'
 import premioService from './service/premio'
+import favoritosService from './service/favoritos'
 
 import utils from './utils/utils'
 import Awards from './enums/Awards'
@@ -29,6 +30,7 @@ const App = () => {
   const [ showFavoritos, setShowFavoritos ] = useState(false)
   const [ showCrearCuenta, setShowCrearCuenta ] = useState(false)
   const [ showProfile, setShowProfile ] = useState(false)
+  const [ awards, setAwards ] = useState([])
   const [ successMessage, setSuccessMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
 
@@ -38,11 +40,23 @@ const App = () => {
     if (loggedUserMovie) {
       const user = JSON.parse(loggedUserMovie)
       
-      const response = userService.getByName(user.username)
+      const response = userService.getUser(user.id)
       response.then(response => {
-          setUser(response)
           window.localStorage.setItem('loggedUserMovie', JSON.stringify(response))
+          
+          setUser(response)
           setShowSearchForm(true)
+
+          const responseAward = premioService.getPremios()
+          responseAward.then(response => {
+            Awards.setValues(response)
+            setAwards(Awards.getValues())                 
+          }).catch(error => {
+              setErrorMessage('No se han podido cargar los premios')
+              setTimeout(() => { setErrorMessage(null) }, 5000)
+          })
+
+         
         }).catch(error => {
           setErrorMessage('La sesión ha caducado')
           setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -52,17 +66,6 @@ const App = () => {
         })
     }
  }, []) 
-
- useEffect(() => {
-    const response = premioService.getPremios()
-    response.then(response => {
-        Awards.setValues(response)    
-    }).catch(error => {
-        setErrorMessage('No se han podido cargar los premios')
-        setTimeout(() => { setErrorMessage(null) }, 5000)
-    })
- 
-  }, [])
 
   const login = async (username, password) => {
     try {
@@ -76,6 +79,15 @@ const App = () => {
       setSuccessMessage('Iniciada sesión')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
       window.localStorage.setItem('loggedUserMovie', JSON.stringify(user))
+
+      const responseAward = premioService.getPremios()
+      responseAward.then(response => {
+          Awards.setValues(response)
+          setAwards(Awards.getValues())    
+      }).catch(error => {
+          setErrorMessage('No se han podido cargar los premios')
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+      })
     } catch (exception) {
       setErrorMessage('Usuario o contraseña incorrectos')
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -192,7 +204,7 @@ const App = () => {
 
   const addFavoritos = async (movie) => {    
     try {
-      const response = await userService.addFavsByUserId(user.id, movie)
+      const response = await favoritosService.addFavs(movie)
       setMovie(response)
       const usuario = {...user, favoritos: [...user.favoritos, {movieId: response.id}]}
       setUser(usuario)
@@ -208,7 +220,7 @@ const App = () => {
 
   const removeFavoritos = async (movieId) => {    
     try {
-      await userService.removeFavsByUserId(user.id, movieId)
+      await favoritosService.removeFavs(movieId)
       
       const favs = user.favoritos.filter(favs => favs.movieId !== movieId)
       setUser({...user, favoritos: favs})
@@ -223,7 +235,7 @@ const App = () => {
 
   const loadFavs = async (userId, pagina) => {
     try {
-      const response = await userService.getUserFavs(userId, pagina)
+      const response = await favoritosService.getUserFavs(pagina)
       
       setPremio(null)
       setPremioGanadores(null)
@@ -257,7 +269,7 @@ const App = () => {
 
   const createUser = async (username, password) => {
     try {
-      const response = await userService.createUser({ username, password })
+      await userService.createUser({ username, password })
       
       setShowCrearCuenta(false)
       setSuccessMessage('Cuenta creada con exito')
@@ -317,17 +329,58 @@ const App = () => {
     setShowProfile(false)
   }
 
-  
+  const uiState = {
+    showCrearCuenta,
+    showSearchForm,
+    showCartelera,
+    showFavoritos,
+    showProfile,
+    successMessage,
+    errorMessage
+  }
+
+  const movieState = {
+    movie,
+    movieDetail,
+    premio,
+    premioGanadores,
+    paramSearch
+  }
+
+  const handlers = {
+    login,
+    logout,
+    createUser,
+    handleCrearCuenta,
+    updateUser,
+    loadMovieDetail,
+    loadCartelera,
+    loadFavs,
+    loadPremio,
+    addFavoritos,
+    removeFavoritos,
+    addVote,
+    search
+  }
   
   return (
     <div>
-      {(user !== null) ? <NavigationBar user={user} logout={logout} loadCartelera={loadCartelera} showPremio={showPremio} loadFavs={loadFavs} loadProfile={loadProfile}/> : <></>}
-      {utils.showHeader(user, movieDetail, showProfile, premio, premioGanadores)}
+      {user && (
+        <NavigationBar
+          user={user}
+          logout={logout}
+          loadCartelera={loadCartelera}
+          showPremio={showPremio}
+          loadFavs={loadFavs}
+          loadProfile={loadProfile}
+          awards={awards}
+        />
+      )}
+
+      {utils.showHeader({ user, movieState, uiState })}
       <Notification successMessage={successMessage} errorMessage={errorMessage} />
-      {utils.showBody(user, showCrearCuenta, login, createUser, handleCrearCuenta, updateUser, showProfile, 
-                        movieDetail, loadMovieDetail, showSearchForm, movie, premio, premioGanadores, loadPremio, addFavoritos, removeFavoritos, addVote,
-                        search)}
-      {utils.showFooter(user, movie, showCartelera, showFavoritos, search, paramSearch, loadCartelera, loadFavs)}
+      {utils.showBody({ user, uiState, movieState, handlers })}
+      {utils.showFooter({ user, movieState, uiState, handlers })}
     </div>
   )
 }

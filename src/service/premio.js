@@ -12,7 +12,11 @@ const getPremiosByCodigoAnyo = async (premioCod, anyo) => {
 }
 
 const getPremios = () => {
-    const response = axios.get(`${baseUrl}`)
+  const config = {
+    headers: {Authorization: window.localStorage.getItem('loggedUserToken')}
+  }
+  
+    const response = axios.get(`${baseUrl}`, config)
     return response.then(response => response.data)  
 }
 

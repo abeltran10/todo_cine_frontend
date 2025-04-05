@@ -3,9 +3,9 @@ const Award = {
 }
 
 const getValues = () => {
-    const keys = Object.keys(Award).map(key => Award[key])
-    console.log(keys)
-    return keys
+    const values = Object.keys(Award).map(key => Award[key])
+    console.log(values)
+    return values
  }
 
  const setValues = premios => {
