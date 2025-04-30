@@ -35,7 +35,34 @@ const updateUser = async user => {
   const response = await axios.put(`${baseUrl}/${user.id}`, user, config)  
   return response.data
 }
+
+const getUserFavs = async (userId, pagina) => {
+  const config = {
+      headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+    }
+
+  const response =  await axios.get(`${baseUrl}/${userId}/movie?page=${pagina}`, config)
+  return response.data
+}
+
+const addFavs = async (userId, movie) => {
+  const config = {
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+  }
+
+  const response = await axios.post(`${baseUrl}/${userId}/movie`, movie, config)
+  return response.data  
+}
+
+const removeFavs = async (userId, movieId) => {
+  const config = {
+    headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
+  }
+
+  const response = await axios.delete(`${baseUrl}/${userId}/movie/${movieId}`, config)
+  return response.data  
+}
  
 
 
-export default { getUser, getByName, createUser, updateUser }
+export default { getUser, getByName, createUser, updateUser, getUserFavs, addFavs, removeFavs }

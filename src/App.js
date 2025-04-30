@@ -9,7 +9,6 @@ import loginService from './service/login'
 import movieService from './service/movie'
 import userService from './service/user'
 import premioService from './service/premio'
-import favoritosService from './service/favoritos'
 
 import utils from './utils/utils'
 import Awards from './enums/Awards'
@@ -190,7 +189,7 @@ const App = () => {
       setMovieDetail(null)
       setShowSearchForm(false)
       setShowFavoritos(false)
-      setShowCartelera(true)
+      setShowCartelera(false)
       setParamSearch(null)
       setShowCrearCuenta(false)
       setShowProfile(false)
@@ -204,7 +203,7 @@ const App = () => {
 
   const addFavoritos = async (movie) => {    
     try {
-      const response = await favoritosService.addFavs(movie)
+      const response = await userService.addFavs(user.id, movie)
       setMovie(response)
       const usuario = {...user, favoritos: [...user.favoritos, {movieId: response.id}]}
       setUser(usuario)
@@ -220,7 +219,7 @@ const App = () => {
 
   const removeFavoritos = async (movieId) => {    
     try {
-      await favoritosService.removeFavs(movieId)
+      await userService.removeFavs(user.id, movieId)
       
       const favs = user.favoritos.filter(favs => favs.movieId !== movieId)
       setUser({...user, favoritos: favs})
@@ -235,7 +234,7 @@ const App = () => {
 
   const loadFavs = async (userId, pagina) => {
     try {
-      const response = await favoritosService.getUserFavs(pagina)
+      const response = await userService.getUserFavs(userId, pagina)
       
       setPremio(null)
       setPremioGanadores(null)
@@ -306,7 +305,7 @@ const App = () => {
     const vote = {usuarioId: user.id, movieId, voto: rating}
 
     try {
-      const peli = await movieService.votar(movieId, user.id, vote)
+      const peli = await movieService.votar(movieId, vote)
       setMovieDetail(peli)
     } catch (error) {
       setErrorMessage(error.response.data.message)
@@ -373,7 +372,6 @@ const App = () => {
           showPremio={showPremio}
           loadFavs={loadFavs}
           loadProfile={loadProfile}
-          awards={awards}
         />
       )}
 
