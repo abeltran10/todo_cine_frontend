@@ -19,9 +19,9 @@ import Awards from './enums/Awards'
 
 const App = () => {
   const [ user, setUser ] = useState(null)
-  const [ movie, setMovie ] = useState(null)
+  const [ movies, setMovies ] = useState(null)
   const [ movieDetail, setMovieDetail ] = useState(null)
-  const [ premio, setPremio ] = useState(null)
+  const [ premioAnyos, setPremioAnyos ] = useState(null)
   const [ premioGanadores, setPremioGanadores] = useState(null)
   const [ paramSearch, setParamSearch ] = useState('')
   const [ showSearchForm, setShowSearchForm ] = useState(false)
@@ -105,10 +105,10 @@ const App = () => {
       window.localStorage.removeItem('loggedUserToken')
       window.localStorage.removeItem('loggedUserMovie')
 
-      setPremio(null)
+      setPremioAnyos(null)
       setPremioGanadores(null)
       setUser(null)
-      setMovie(null)
+      setMovies(null)
       setParamSearch(null)
       setMovieDetail(null)
       setShowSearchForm(false)
@@ -126,7 +126,7 @@ const App = () => {
   const search = async (text, page) => {
     try {
       const pelis = await movieService.getByName(text, page)
-      setMovie(pelis)
+      setMovies(pelis)
       setParamSearch(text)
       setMovieDetail(null)
     } catch (error) {
@@ -142,10 +142,10 @@ const App = () => {
     try {
       const peli = await movieService.getMovieById(id)
 
-      setPremio(null)
+      setPremioAnyos(null)
       setPremioGanadores(null)
       setMovieDetail(peli)
-      setMovie(null)
+      setMovies(null)
       setParamSearch(null)
       setShowSearchForm(false)
       setShowFavoritos(false)
@@ -162,9 +162,9 @@ const App = () => {
     try {
       const pelis = await movieService.getMoviesPlayingNowByRegion(region, page)
 
-      setPremio(null)
+      setPremioAnyos(null)
       setPremioGanadores(null)
-      setMovie(pelis)
+      setMovies(pelis)
       setMovieDetail(null)
       setShowSearchForm(false)
       setShowFavoritos(false)
@@ -184,8 +184,8 @@ const App = () => {
       const award = await premioService.getPremiosByCodigoAnyo(premioCod, anyo)
 
       setPremioGanadores(award)
-      setPremio(null)
-      setMovie(null)
+      setPremioAnyos(null)
+      setMovies(null)
       setMovieDetail(null)
       setShowSearchForm(false)
       setShowFavoritos(false)
@@ -204,7 +204,7 @@ const App = () => {
   const addFavoritos = async (movie) => {    
     try {
       const response = await userService.addFavs(user.id, movie)
-      setMovie(response)
+      setMovies(response)
       const usuario = {...user, favoritos: [...user.favoritos, {movieId: response.id}]}
       setUser(usuario)
       window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
@@ -236,9 +236,9 @@ const App = () => {
     try {
       const response = await userService.getUserFavs(userId, pagina)
       
-      setPremio(null)
+      setPremioAnyos(null)
       setPremioGanadores(null)
-      setMovie(response)
+      setMovies(response)
       setParamSearch(null)
       setMovieDetail(null)
       setShowSearchForm(false)
@@ -254,9 +254,9 @@ const App = () => {
   }
 
   const loadProfile = () => {
-      setPremio(null)
+      setPremioAnyos(null)
       setPremioGanadores(null)
-      setMovie(null)
+      setMovies(null)
       setParamSearch(null)
       setMovieDetail(null)
       setShowSearchForm(false)
@@ -315,10 +315,10 @@ const App = () => {
     
   }
 
-  const showPremio = (premio) => {
-    setPremio(premio)
+  const showPremioAnyos = (premioAnyos) => {
+    setPremioAnyos(premioAnyos)
     setPremioGanadores(null)
-    setMovie(null)
+    setMovies(null)
     setParamSearch(null)
     setMovieDetail(null)
     setShowSearchForm(false)
@@ -339,9 +339,9 @@ const App = () => {
   }
 
   const movieState = {
-    movie,
+    movies,
     movieDetail,
-    premio,
+    premioAnyos,
     premioGanadores,
     paramSearch
   }
@@ -369,7 +369,7 @@ const App = () => {
           user={user}
           logout={logout}
           loadCartelera={loadCartelera}
-          showPremio={showPremio}
+          showPremioAnyos={showPremioAnyos}
           loadFavs={loadFavs}
           loadProfile={loadProfile}
         />

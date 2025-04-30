@@ -6,7 +6,7 @@ import Regions from '../enums/Regions'
 import Awards from '../enums/Awards'
 
 
-const NavigationBar = ({user, logout, loadCartelera, showPremio, loadFavs, loadProfile}) => {
+const NavigationBar = ({user, logout, loadCartelera, showPremioAnyos, loadFavs, loadProfile}) => {
 
 
   const handleLogout = async () => {
@@ -17,8 +17,8 @@ const NavigationBar = ({user, logout, loadCartelera, showPremio, loadFavs, loadP
     await loadCartelera(region, 1)
   }
 
-  const showPremioAnyos = async (premio) => {
-    await showPremio(premio)
+  const handlePremioAnyos = async (premio) => {
+    await showPremioAnyos(premio)
   }
 
   const handleFavs = async (userId) => {
@@ -36,7 +36,7 @@ const NavigationBar = ({user, logout, loadCartelera, showPremio, loadFavs, loadP
           {Regions.getValues().map(k => <NavDropdown.Item key={k[0]} onClick={() => handleCartelera(k[1])}>{k[2]}</NavDropdown.Item>)}
         </NavDropdown>
         <NavDropdown title="Premios" id="navbarScrollingDropdown">
-          {Awards.getValues().map(item => <NavDropdown.Item key={item[0]} onClick={() => showPremioAnyos(item)}>{item[1]}</NavDropdown.Item>)}
+          {Awards.getValues().map(item => <NavDropdown.Item key={item[0]} onClick={() => handlePremioAnyos(item)}>{item[1]}</NavDropdown.Item>)}
         </NavDropdown>     
         <NavDropdown title={`Signed as ${user.username}`} id="navbarScrollingDropdown">
           <NavDropdown.Item href="#profile" onClick={handleProfile}>Perfil</NavDropdown.Item>

@@ -15,7 +15,7 @@ import MovieCard from '../component/MovieCard'
 import Premio from '../component/Premio'
 
 const showHeader = ({ user, movieState, uiState }) => {
-  const { movieDetail, premio, premioGanadores } = movieState
+  const { movieDetail, premioAnyos, premioGanadores } = movieState
   const { showProfile } = uiState
 
   if (!user) 
@@ -24,8 +24,8 @@ const showHeader = ({ user, movieState, uiState }) => {
      return <h1 className='text-info text-center'>DETALLE</h1>
   else if (showProfile) 
     return <h1 className='text-info text-center'>PERFIL</h1>
-  else if (premio) 
-    return <h1 className='text-info text-center'>{premio[1].toUpperCase()}</h1>
+  else if (premioAnyos) 
+    return <h1 className='text-info text-center'>{premioAnyos[1].toUpperCase()}</h1>
   else if (premioGanadores) 
     return <h1 className='text-info text-center'>{premioGanadores[0].premio.toUpperCase()}</h1>
   
@@ -40,9 +40,9 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
   } = uiState
 
   const {
-    movie,
+    movies,
     movieDetail,
-    premio,
+    premioAnyos,
     premioGanadores
   } = movieState
 
@@ -71,9 +71,9 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
     </Container>
   )
 
-  const showPremio = (premio) => (
+  const showPremioAnyos = (premioAnyos) => (
     <Container className='p-3 mb-2' fluid="md">
-      {showGridPremio(premio, loadPremio)}
+      {showGridPremioAnyos(premioAnyos, loadPremio)}
     </Container>
   )
 
@@ -107,44 +107,44 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
     return (
       <div>
         <SearchForm search={search} />
-        {movie ? container(movie) : null}
+        {movies ? container(movies) : null}
       </div>
     )
 
-  if (movie) return container(movie)
+  if (movies) return container(movies)
   if (premioGanadores) return ganadores(premioGanadores)
-  if (premio) return showPremio(premio)
+  if (premioAnyos) return showPremioAnyos(premioAnyos)
 }
 
 const showFooter = ({ user, movieState, uiState, handlers }) => {
-  const { movie, paramSearch } = movieState
+  const { movies, paramSearch } = movieState
   const { showCartelera, showFavoritos } = uiState
   const { search, loadCartelera, loadFavs } = handlers
 
-  if (!user || !movie) return null
+  if (!user || !movies) return null
 
   if (!showCartelera && !showFavoritos)
-    return <Paginator functionSearch={search} param={paramSearch} pageNumbers={movie.total_pages} />
+    return <Paginator functionSearch={search} param={paramSearch} pageNumbers={movies.total_pages} />
 
   if (showCartelera)
-    return <Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movie.total_pages} />
+    return <Paginator functionSearch={loadCartelera} param={paramSearch} pageNumbers={movies.total_pages} />
 
   if (showFavoritos)
-    return <Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movie.total_pages} />
+    return <Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movies.total_pages} />
 }
 
 
 
-const showGridMovies = (movie, loadMovieDetail) => {
+const showGridMovies = (movies, loadMovieDetail) => {
   const row = []
-  if (movie !== null) {
-    const length = movie.results.length
+  if (movies !== null) {
+    const length = movies.results.length
     let i = 0
     while (i + 3 <= length) {
       row.push(<Row key={i}><CardGroup>
-        <MovieCard key={i} movie={movie.results[i]} loadMovieDetail={loadMovieDetail}/>
-        <MovieCard key={i + 1} movie={movie.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
-        <MovieCard key={i + 2} movie={movie.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
+        <MovieCard key={i} movie={movies.results[i]} loadMovieDetail={loadMovieDetail}/>
+        <MovieCard key={i + 1} movie={movies.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
+        <MovieCard key={i + 2} movie={movies.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
         </CardGroup>
       </Row>)
       
@@ -153,14 +153,14 @@ const showGridMovies = (movie, loadMovieDetail) => {
       
     if ( length - i === 1) {
         row.push(<Row key={length - 1}><CardGroup>
-          <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail} />
+          <MovieCard key={length - 1} movie={movies.results[length - 1]} loadMovieDetail={loadMovieDetail} />
           <Card></Card>
           <Card></Card>
           </CardGroup></Row>)
     } else if (length - i === 2)  {
       row.push(<Row key={length - 2}><CardGroup>
-          <MovieCard key={length - 2} movie={movie.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
-          <MovieCard key={length - 1} movie={movie.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={length - 2} movie={movies.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
+          <MovieCard key={length - 1} movie={movies.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
           <Card></Card>
           </CardGroup></Row>)
     }
@@ -205,16 +205,16 @@ const showGridGanadores = (ganadores, loadMovieDetail) => {
 
 }
 
-const showGridPremio = (premio, loadPremio) => {
-  console.log(premio[2]) 
+const showGridPremioAnyos = (premioAnyos, loadPremio) => {
+  console.log(premioAnyos[2]) 
   
   const card = (i) => {
     
     return <div>
                   <Card style={{ width: '18rem' }}>
                     <Card.Body>
-                      <Card.Title>{premio[2][i]}</Card.Title>
-                      <Button className="detalleButton" variant="primary" onClick={() => loadPremio(premio[0], premio[2][i])}>Detalle</Button>
+                      <Card.Title>{premioAnyos[2][i]}</Card.Title>
+                      <Button className="detalleButton" variant="primary" onClick={() => loadPremio(premioAnyos[0], premioAnyos[2][i])}>Detalle</Button>
                     </Card.Body>
                   </Card>  
             </div>
@@ -223,7 +223,7 @@ const showGridPremio = (premio, loadPremio) => {
   
   
     const row = []
-    const anyos = premio[2].length
+    const anyos = premioAnyos[2].length
     let i = 0
     while (i + 3 <= anyos) {
       row.push(
