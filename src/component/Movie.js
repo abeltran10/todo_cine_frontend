@@ -11,29 +11,28 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faStar as solidStar} from '@fortawesome/free-solid-svg-icons'
 import {faStar as regularStar} from '@fortawesome/free-regular-svg-icons'
 
-const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVote }) => {
-    console.log(userFavs)
+const Movie = ({movieDetail, addFavoritos, removeFavoritos, addVote}) => {
+    const showAddButton = movieDetail.favoritos
+
+    const currentVote = movieDetail.voto
+
+    const img = (movieDetail.poster_path) ? `https://image.tmdb.org/t/p/w500/${movieDetail.poster_path}` : null
     
-    const currentVote = (userVote.length !== 0) ? userVote[0].voto : 0
+    const video = (movieDetail.videos.length !== 0) ? `https://www.youtube.com/embed/${movieDetail.videos[0].key}` : null
 
-    const showAddButton = (userFavs.length === 0)
+    const releaseDate = movieDetail.release_date ? `(${movieDetail.release_date.substring(0, movieDetail.release_date.indexOf("-"))})` : ''
 
-    const img = (movie.poster_path) ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : null
-    
-    const video = (movie.videos.length !== 0) ? `https://www.youtube.com/embed/${movie.videos[0].key}` : null
-
-    const releaseDate = `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})`
 
     const handleFavoritos = async () => {
-        await addFavoritos(movie)
+        await addFavoritos(movieDetail)
     }
 
     const handleRemoveFav = async () => {
-        await removeFavoritos(movie.id)
+        await removeFavoritos(movieDetail)
     }
 
     const handleVote = async (rate) => {
-        await addVote(movie.id, rate)
+        await addVote(movieDetail, rate)
     }
 
     const rating = () => {
@@ -49,20 +48,20 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVo
         <Container>
             <Row>
               <Col />
-              <Col><h3 className='text-info text-center'>{movie.title}  {releaseDate}</h3></Col>  
+              <Col><h3 className='text-info text-center'>{movieDetail.title}  {releaseDate}</h3></Col>  
             </Row>
             <Row>
                 <Col><Image src={img} thumbnail /></Col>
                 <Col>
-                    <Row>{movie.overview}</Row>
+                    <Row>{movieDetail.overview}</Row>
                     <br/>
                     <Row>{(video) ? <Container><iframe width="420" height="315" src={video} /></Container> : <></>}</Row> 
                     <Row />
                     <br/>
-                    {showAddButton ? <Row><Container><Button className="addFavsButton" variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row> : 
+                    {!showAddButton ? <Row><Container><Button className="addFavsButton" variant="secondary" type="button" onClick={handleFavoritos}>Añadir a favoritos</Button></Container></Row> : 
                             <Row><Container><Button variant="secondary" type="button" onClick={handleRemoveFav}>Quitar de favoritos</Button></Container></Row> }
                     <br/>
-                    <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movie.genres.map(g => g.name).join(' | ')}</Container></Row>
+                    <Row><Container><span className="fw-bold fst-italic">Géneros:</span> {movieDetail.genres.map(g => g.name).join(' | ')}</Container></Row>
                     <br/>
                     <Row>
                         <Container>
@@ -71,18 +70,18 @@ const Movie = ({ userFavs, movie, addFavoritos, removeFavoritos, addVote, userVo
                     </Row>
                     <Row>
                         <Container>
-                            <span id='total_votos' className="fw-bold fst-italic">Total votos Todo Cine:</span>  {movie.total_votos_TC}
+                            <span id='total_votos' className="fw-bold fst-italic">Total votos Todo Cine:</span>  {movieDetail.total_votos_TC}
                         </Container>
                     </Row>
                     <Row>
                         <Container>
-                            <span id='votos_media' className="fw-bold fst-italic">Puntuación TC:</span>  {movie.votos_media_TC}
+                            <span id='votos_media' className="fw-bold fst-italic">Puntuación TC:</span>  {movieDetail.votos_media_TC}
                         </Container>
                     </Row>
                     <br/>
                     <br/>
-                    <Row><Container><span className="fw-bold fst-italic">Votos totales:</span> {movie.vote_count}</Container></Row>
-                    <Row><Container><span className="fw-bold fst-italic">Puntuación:</span> {movie.vote_average}</Container></Row>
+                    <Row><Container><span className="fw-bold fst-italic">Votos totales:</span> {movieDetail.vote_count}</Container></Row>
+                    <Row><Container><span className="fw-bold fst-italic">Puntuación:</span> {movieDetail.vote_average}</Container></Row>
                     
                 </Col>
             </Row>

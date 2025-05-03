@@ -17,12 +17,12 @@ const getByName = async (name, page) => {
     return response.data
 }
 
-const getMovieById = async (id) => {
+const getDetailMovieById = async (id) => {
   const config = {
     headers: {Authorization: window.localStorage.getItem('loggedUserToken')}
   }
 
-  const response = await axios.get(`${baseUrl}/${id}`, config)
+  const response = await axios.get(`${baseUrl}/${id}/detail`, config)
   return response.data
 }
 
@@ -46,4 +46,4 @@ const votar = async (movieId, vote) => {
 
 }
 
-export default { getAll, getByName, getMovieById, getMoviesPlayingNowByRegion, votar }
+export default { getAll, getByName, getDetailMovieById, getMoviesPlayingNowByRegion, votar }

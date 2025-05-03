@@ -50,7 +50,7 @@ const NavigationBar = ({user, logout, loadCartelera, showPremioAnyos, loadFavs, 
   return (
        <Navbar className="bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="#brand">Todo Cine</Navbar.Brand>
+          <Navbar.Brand href=".">Todo Cine</Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Nav>

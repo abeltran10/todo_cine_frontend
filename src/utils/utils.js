@@ -13,6 +13,9 @@ import SearchForm from '../component/SearchForm'
 import Paginator from '../component/Paginator'
 import MovieCard from '../component/MovieCard'
 import Premio from '../component/Premio'
+import PremioAnyos from '../component/PremioAnyos'
+import FavoritosCard from '../component/FavoritosCard'
+
 
 const showHeader = ({ user, movieState, uiState }) => {
   const { movieDetail, premioAnyos, premioGanadores } = movieState
@@ -27,7 +30,7 @@ const showHeader = ({ user, movieState, uiState }) => {
   else if (premioAnyos) 
     return <h1 className='text-info text-center'>{premioAnyos[1].toUpperCase()}</h1>
   else if (premioGanadores) 
-    return <h1 className='text-info text-center'>{premioGanadores[0].premio.toUpperCase()}</h1>
+    return <h1 className='text-info text-center'>{premioGanadores.results[0].premio.toUpperCase()}</h1>
   
   return <h1 className='text-info text-center'>PELÍCULAS</h1>
 }
@@ -36,7 +39,8 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
   const {
     showCrearCuenta,
     showProfile,
-    showSearchForm
+    showSearchForm,
+    showFavoritos
   } = uiState
 
   const {
@@ -55,6 +59,7 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
     loadPremio,
     addFavoritos,
     removeFavoritos,
+    updateVista,
     addVote,
     search
   } = handlers
@@ -77,6 +82,12 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
     </Container>
   )
 
+  const favoritos = (pelis) => (
+    <Container className='p-3 mb-2' fluid="md">
+      {showGridFavoritos(pelis, loadMovieDetail, updateVista)}
+    </Container>
+  )
+
   if (!user && !showCrearCuenta)
     return <div><LoginForm login={login} handleCrearCuenta={handleCrearCuenta} /></div>
 
@@ -94,12 +105,10 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
   if (movieDetail)
     return (
       <Movie
-        userFavs={user.favoritos.filter(fav => fav.movieId === movieDetail.id)}
-        movie={movieDetail}
+        movieDetail={movieDetail}
         addFavoritos={addFavoritos}
         removeFavoritos={removeFavoritos}
         addVote={addVote}
-        userVote={movieDetail.votos.filter(v => v.usuarioId === user.id)}
       />
     )
 
@@ -111,19 +120,20 @@ const showBody = ({ user, uiState, movieState, handlers }) => {
       </div>
     )
 
-  if (movies) return container(movies)
+  if (movies && !showFavoritos) return container(movies)
+  if (showFavoritos) return favoritos(movies)
   if (premioGanadores) return ganadores(premioGanadores)
   if (premioAnyos) return showPremioAnyos(premioAnyos)
 }
 
 const showFooter = ({ user, movieState, uiState, handlers }) => {
-  const { movies, paramSearch } = movieState
+  const { movies, paramSearch, premioGanadores} = movieState
   const { showCartelera, showFavoritos } = uiState
-  const { search, loadCartelera, loadFavs } = handlers
+  const { search, loadCartelera, loadFavs, loadPremio } = handlers
 
-  if (!user || !movies) return null
+  if (!user || (!movies && !premioGanadores)) return null
 
-  if (!showCartelera && !showFavoritos)
+  if (!showCartelera && !showFavoritos && movies)
     return <Paginator functionSearch={search} param={paramSearch} pageNumbers={movies.total_pages} />
 
   if (showCartelera)
@@ -131,8 +141,11 @@ const showFooter = ({ user, movieState, uiState, handlers }) => {
 
   if (showFavoritos)
     return <Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movies.total_pages} />
+  if (premioGanadores) {
+    const parameters = {premioCod: premioGanadores.results[0].premioCod, premioAnyo: premioGanadores.results[0].anyo}
+    return <Paginator functionSearch={loadPremio} param={parameters} pageNumbers={premioGanadores.total_pages} />
+  }
 }
-
 
 
 const showGridMovies = (movies, loadMovieDetail) => {
@@ -172,14 +185,14 @@ const showGridMovies = (movies, loadMovieDetail) => {
 
 const showGridGanadores = (ganadores, loadMovieDetail) => {
   const row = []
-  if (ganadores !== null) {
-    const length = ganadores.length
+  if (ganadores.results !== null) {
+    const length = ganadores.results.length
     let i = 0
     while (i + 3 <= length) {
       row.push(<Row key={i}><CardGroup>
-        <Premio key={i} ganador={ganadores[i]} loadMovieDetail={loadMovieDetail}/>
-        <Premio key={i + 1} ganador={ganadores[i + 1]} loadMovieDetail={loadMovieDetail}/>
-        <Premio key={i + 2} ganador={ganadores[i + 2]} loadMovieDetail={loadMovieDetail}/>
+        <Premio key={i} ganador={ganadores.results[i]} loadMovieDetail={loadMovieDetail}/>
+        <Premio key={i + 1} ganador={ganadores.results[i + 1]} loadMovieDetail={loadMovieDetail}/>
+        <Premio key={i + 2} ganador={ganadores.results[i + 2]} loadMovieDetail={loadMovieDetail}/>
         </CardGroup>
       </Row>)
       
@@ -188,14 +201,14 @@ const showGridGanadores = (ganadores, loadMovieDetail) => {
       
     if ( length - i === 1) {
         row.push(<Row key={length - 1}><CardGroup>
-          <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail} />
+          <Premio key={length - 1} ganador={ganadores.results[length - 1]} loadMovieDetail={loadMovieDetail} />
           <Card></Card>
           <Card></Card>
           </CardGroup></Row>)
     } else if (length - i === 2)  {
       row.push(<Row key={length - 2}><CardGroup>
-          <Premio key={length - 2} ganador={ganadores[length - 2]} loadMovieDetail={loadMovieDetail}/>
-          <Premio key={length - 1} ganador={ganadores[length - 1]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={length - 2} ganador={ganadores.results[length - 2]} loadMovieDetail={loadMovieDetail}/>
+          <Premio key={length - 1} ganador={ganadores.results[length - 1]} loadMovieDetail={loadMovieDetail}/>
           <Card></Card>
           </CardGroup></Row>)
     }
@@ -208,20 +221,6 @@ const showGridGanadores = (ganadores, loadMovieDetail) => {
 const showGridPremioAnyos = (premioAnyos, loadPremio) => {
   console.log(premioAnyos[2]) 
   
-  const card = (i) => {
-    
-    return <div>
-                  <Card style={{ width: '18rem' }}>
-                    <Card.Body>
-                      <Card.Title>{premioAnyos[2][i]}</Card.Title>
-                      <Button className="detalleButton" variant="primary" onClick={() => loadPremio(premioAnyos[0], premioAnyos[2][i])}>Detalle</Button>
-                    </Card.Body>
-                  </Card>  
-            </div>
-              
-    }
-  
-  
     const row = []
     const anyos = premioAnyos[2].length
     let i = 0
@@ -229,9 +228,9 @@ const showGridPremioAnyos = (premioAnyos, loadPremio) => {
       row.push(
           <Row key={i}>      
           <CardGroup>
-              {card(i)}
-              {card(i + 1)}
-              {card (i + 2)}
+              <PremioAnyos id={i} premioCod={premioAnyos[0]} premioAnyo={premioAnyos[2][i]} loadPremio={loadPremio}/>
+              <PremioAnyos id={i + 1} premioCod={premioAnyos[0]} premioAnyo={premioAnyos[2][i + 1]} loadPremio={loadPremio}/>
+              <PremioAnyos id={i + 2} premioCod={premioAnyos[0]} premioAnyo={premioAnyos[2][i + 2]} loadPremio={loadPremio}/>
           </CardGroup>
         </Row>  
       )
@@ -243,22 +242,58 @@ const showGridPremioAnyos = (premioAnyos, loadPremio) => {
       row.push(
           <Row key={anyos - 1}>      
           <CardGroup>
-              {card(anyos - 1)}
+             <PremioAnyos id={anyos - 1} premioCod={premioAnyos[0]} premioAnyo={premioAnyos[2][anyos - 1]} loadPremio={loadPremio}/>
           </CardGroup>
         </Row> 
       ) 
     } else if (anyos - i === 2) {
       row.push(
           <Row key={anyos - 2}>      
-          <CardGroup>
-              {card(anyos - 2)}
-              {card(anyos - 1)}
-          </CardGroup>
+            <CardGroup>
+              <PremioAnyos id={anyos - 2} premioCod={premioAnyos[0]} premioAnyo={premioAnyos[2][anyos - 2]} loadPremio={loadPremio}/>
+              <PremioAnyos id={anyos - 1} premioCod={premioAnyos[0]} premioAnyo={premioAnyos[2][anyos - 1]} loadPremio={loadPremio}/>
+            </CardGroup>
         </Row> 
       ) 
     }
     
     return row
  }
+
+ const showGridFavoritos = (movies, loadMovieDetail, updateVista) => {
+  const row = []
+  if (movies !== null) {
+    const length = movies.results.length
+    let i = 0
+    while (i + 3 <= length) {
+      row.push(<Row key={i}><CardGroup>
+        <FavoritosCard key={i} movie={movies.results[i]} pagina={movies.page} loadMovieDetail={loadMovieDetail} updateVista={updateVista}/>
+        <FavoritosCard key={i + 1} movie={movies.results[i + 1]} pagina={movies.page} loadMovieDetail={loadMovieDetail} updateVista={updateVista}/>
+        <FavoritosCard key={i + 2} movie={movies.results[i + 2]} pagina={movies.page} loadMovieDetail={loadMovieDetail} updateVista={updateVista}/>
+        </CardGroup>
+      </Row>)
+      
+      i = i + 3
+    }
+      
+    if ( length - i === 1) {
+        row.push(<Row key={length - 1}><CardGroup>
+          <FavoritosCard key={length - 1} movie={movies.results[length - 1]} pagina={movies.page} loadMovieDetail={loadMovieDetail} updateVista={updateVista} />
+          <Card></Card>
+          <Card></Card>
+          </CardGroup></Row>)
+    } else if (length - i === 2)  {
+      row.push(<Row key={length - 2}><CardGroup>
+          <FavoritosCard key={length - 2} movie={movies.results[length - 2]} pagina={movies.page} loadMovieDetail={loadMovieDetail} updateVista={updateVista}/>
+          <FavoritosCard key={length - 1} movie={movies.results[length - 1]} pagina={movies.page} loadMovieDetail={loadMovieDetail} updateVista={updateVista}/>
+          <Card></Card>
+          </CardGroup></Row>)
+    }
+  }
+
+  return row
+
+}
+
 
   export default { showHeader, showBody, showFooter }

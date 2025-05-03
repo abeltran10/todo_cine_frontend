@@ -9,6 +9,7 @@ import loginService from './service/login'
 import movieService from './service/movie'
 import userService from './service/user'
 import premioService from './service/premio'
+import usuarioMovieService from './service/usuarioMovie'
 
 import utils from './utils/utils'
 import Awards from './enums/Awards'
@@ -140,7 +141,7 @@ const App = () => {
   const loadMovieDetail = async (id) => {
     
     try {
-      const peli = await movieService.getMovieById(id)
+      const peli = await movieService.getDetailMovieById(id)
 
       setPremioAnyos(null)
       setPremioGanadores(null)
@@ -179,9 +180,9 @@ const App = () => {
     
   }
 
-  const loadPremio = async (premioCod, anyo) => {
+  const loadPremio = async ({premioCod, premioAnyo}, pagina) => {
     try {
-      const award = await premioService.getPremiosByCodigoAnyo(premioCod, anyo)
+      const award = await premioService.getPremiosByCodigoAnyo(premioCod, premioAnyo, pagina)
 
       setPremioGanadores(award)
       setPremioAnyos(null)
@@ -203,11 +204,11 @@ const App = () => {
 
   const addFavoritos = async (movie) => {    
     try {
-      const response = await userService.addFavs(user.id, movie)
-      setMovies(response)
-      const usuario = {...user, favoritos: [...user.favoritos, {movieId: response.id}]}
-      setUser(usuario)
-      window.localStorage.setItem('loggedUserMovie', JSON.stringify(usuario))
+      const usuarioMovie = {usuarioId: user.id, movieId: movie.id, vista: movie.vista, favoritos: true, voto: movie.voto}  
+
+      const response = await usuarioMovieService.updateUsuarioMovie(user.id, movie.id, usuarioMovie)
+      setMovieDetail(response)
+      
       setSuccessMessage('Añadida película a favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
     } catch (error) {
@@ -217,12 +218,13 @@ const App = () => {
     
   }
 
-  const removeFavoritos = async (movieId) => {    
+  const removeFavoritos = async (movie) => {    
     try {
-      await userService.removeFavs(user.id, movieId)
+      const usuarioMovie = {usuarioId: user.id, movieId: movie.id, vista: movie.vista, favoritos: false, voto: movie.voto} 
+
+      const response = await usuarioMovieService.updateUsuarioMovie(user.id, movie.id, usuarioMovie)
+      setMovieDetail(response)
       
-      const favs = user.favoritos.filter(favs => favs.movieId !== movieId)
-      setUser({...user, favoritos: favs})
       setSuccessMessage('Eliminada película de favoritos')
       setTimeout(() => { setSuccessMessage(null) }, 5000)
     } catch (error) {
@@ -251,6 +253,25 @@ const App = () => {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
     } 
+  }
+
+  const updateVista = async (movie, isVista, pagina) => {
+    try {
+      const usuarioMovie = {usuarioId: user.id, movieId: movie.id, vista: isVista, favoritos: movie.favoritos, voto: movie.voto} 
+
+      await usuarioMovieService.updateUsuarioMovie(user.id, movie.id, usuarioMovie)
+      const pelis = await userService.getUserFavs(user.id, pagina)
+
+      setMovies(pelis)
+      
+      setSuccessMessage('Película vista')
+      setTimeout(() => { setSuccessMessage(null) }, 5000)
+    } catch(error) {
+      setErrorMessage(error.response.data.message)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
+
+
   }
 
   const loadProfile = () => {
@@ -301,12 +322,12 @@ const App = () => {
 
   }
 
-  const addVote = async (movieId, rating) => {
-    const vote = {usuarioId: user.id, movieId, voto: rating}
-
+  const addVote = async (movie, rating) => {
     try {
-      const peli = await movieService.votar(movieId, vote)
-      setMovieDetail(peli)
+      const usuarioMovie = {usuarioId: user.id, movieId: movie.id, vista: movie.vista, favoritos: movie.favoritos, voto: rating} 
+
+      const response = await usuarioMovieService.updateUsuarioMovie(user.id, movie.id, usuarioMovie)
+      setMovieDetail(response)
     } catch (error) {
       setErrorMessage(error.response.data.message)
       setTimeout(() => { setErrorMessage(null) }, 5000)
@@ -322,7 +343,7 @@ const App = () => {
     setParamSearch(null)
     setMovieDetail(null)
     setShowSearchForm(false)
-    setShowFavoritos(true)
+    setShowFavoritos(false)
     setShowCartelera(false)
     setShowCrearCuenta(false)
     setShowProfile(false)
@@ -358,6 +379,7 @@ const App = () => {
     loadPremio,
     addFavoritos,
     removeFavoritos,
+    updateVista,
     addVote,
     search
   }
