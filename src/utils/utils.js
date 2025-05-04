@@ -142,7 +142,7 @@ const showFooter = ({ user, movieState, uiState, handlers }) => {
   if (showFavoritos)
     return <Paginator functionSearch={loadFavs} param={user.id} pageNumbers={movies.total_pages} />
   if (premioGanadores) {
-    const parameters = {premioCod: premioGanadores.results[0].premioCod, premioAnyo: premioGanadores.results[0].anyo}
+    const parameters = {premioCod: premioGanadores.results[0].premioId, premioAnyo: premioGanadores.results[0].anyo}
     return <Paginator functionSearch={loadPremio} param={parameters} pageNumbers={premioGanadores.total_pages} />
   }
 }
