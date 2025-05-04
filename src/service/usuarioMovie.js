@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = '/app/usuario/'
+const baseUrl = '/app/usuario'
 
 
 const updateUsuarioMovie = async (userId, movieId, usuarioMovie) => {
