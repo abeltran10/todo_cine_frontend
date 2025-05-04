@@ -1,12 +1,18 @@
 const Award = {
-    GOYA: [1, 'Goya', [2024, 2025]],
-    
+        
 }
 
 const getValues = () => {
-    const keys = Object.keys(Award).map(key => Award[key])
-    console.log(keys)
-    return keys
+    const values = Object.keys(Award).map(key => Award[key])
+    console.log(values)
+    return values
  }
 
-export default { getValues }
+ const setValues = premios => {
+    premios.forEach(p => {
+        const titulo = p.titulo.toUpperCase()
+        Award[titulo] = [p.id, p.titulo, p.anyos]
+    });
+ }
+
+export default { getValues, setValues }
