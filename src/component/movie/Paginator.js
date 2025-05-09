@@ -85,20 +85,20 @@ const Paginator = ({functionSearch, param, pageNumbers}) => {
     }
     
     return (
-      <Container className='p-3 mb-2' fluid="md">
-        <Row className="justify-content-md-center">
-          <Col>
-            <Pagination id="pagination">
-              <Pagination.First onClick={() => handleFirst()} />
-              <Pagination.Prev onClick={() => handlePrev()} /> 
-              {showPaginationNumbers()}
-              <Pagination.Next  onClick={() => handleNext()} />
-              <Pagination.Last  onClick={() => handleLast()} />
-            </Pagination>
-          </Col>    
-        </Row>         
-        <br />
-      </Container>
+        <Container className='p-3 mb-2' fluid="md">
+          <Row className="justify-content-md-center">
+            <Col>
+              <Pagination id="pagination">
+                <Pagination.First onClick={() => handleFirst()} />
+                <Pagination.Prev onClick={() => handlePrev()} /> 
+                {showPaginationNumbers()}
+                <Pagination.Next  onClick={() => handleNext()} />
+                <Pagination.Last  onClick={() => handleLast()} />
+              </Pagination>
+            </Col>    
+          </Row>         
+          <br />
+        </Container>
     )
     
 }

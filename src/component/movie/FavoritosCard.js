@@ -5,18 +5,24 @@ import Row from 'react-bootstrap/Row'
 
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form';
 
-const FavoritosCard = ({movie, pagina, loadMovieDetail, updateVista}) => {
-  
+import { useNavigate } from 'react-router-dom'
+
+const FavoritosCard = ({movie, pagina, updateVista}) => {
+  const navigate = useNavigate()
+
   const img = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
 
 
-  const handleLoadMovieDetail = async (id) => {
-      await loadMovieDetail(id)
+  const handleVista = async (isVista) => {
+    await updateVista(movie, isVista, pagina)
+
+
   }
 
-  const handleVista = async (isVista) => {
-     await updateVista(movie, isVista, pagina) 
+  const handleLoadMovieDetail = async (id) => {
+    navigate(`/moviedetail/${id}`)
   }
 
   const releaseDate = movie.release_date ? `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})` : ''
@@ -33,14 +39,14 @@ const FavoritosCard = ({movie, pagina, loadMovieDetail, updateVista}) => {
             </Card.Text>
             <br/>
             <br/>
-            {!isVista ? <Row><Container><Button className="addFavsButton" variant="secondary" type="button" onClick={() => handleVista(!isVista)}>No vista</Button></Container></Row> : 
-                            <Row><Container><Button variant="secondary" type="button" onClick={() => handleVista(!isVista)}>Vista</Button></Container></Row> }
+            <Row><Container><Form.Check type="switch" id="custom-switch" label="Vista" checked={isVista} onClick={() => handleVista(!isVista)}></Form.Check></Container></Row> 
             <br/>
             <br/>
             <Button className="detalleButton" variant="primary" onClick={() => handleLoadMovieDetail(movie.id)}>Detalle</Button>
             
           </Card.Body>
-      </Card>      
+        </Card>
+      
   )
 }
 

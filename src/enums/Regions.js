@@ -2,7 +2,7 @@
 
 const Region = {
     ES: [0, 'ES', 'España'],
-    USA: [1, 'US', 'USA']
+    US: [1, 'US', 'USA']
 }
 
 const getValues = () => {
@@ -11,4 +11,8 @@ const getValues = () => {
     return keys
  }
 
-export default { getValues }
+ const getRegion = (region) => {
+    return Region[region]
+ }
+
+export default { getValues, getRegion }
