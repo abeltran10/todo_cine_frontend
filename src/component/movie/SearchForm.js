@@ -5,9 +5,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const SearchForm = ({ search }) => {
+const SearchForm = ({search}) => {
     const [ text, setText ] = useState('')
+       
 
     const handleSearch = async (event) => {
         event.preventDefault()
@@ -18,8 +20,8 @@ const SearchForm = ({ search }) => {
     }
 
     return (
-        <Container fluid="md">
-                <Row>
+      <Container fluid="md">
+              <Row>
                   <Col>
                     <Form onSubmit={handleSearch}>
                       <Form.Group className="mb-3" controlId="formGroupSearch">
@@ -33,7 +35,6 @@ const SearchForm = ({ search }) => {
                   </Col>
               </Row>
             </Container>   
-     
     )
 }
 

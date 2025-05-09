@@ -1,5 +1,5 @@
 const Award = {
-        
+        1: [1, 'Goya', [2024, 2025]]
 }
 
 const getValues = () => {
@@ -10,9 +10,12 @@ const getValues = () => {
 
  const setValues = premios => {
     premios.forEach(p => {
-        const titulo = p.titulo.toUpperCase()
-        Award[titulo] = [p.id, p.titulo, p.anyos]
+        Award[p.id] = [p.id, p.titulo, p.anyos]
     });
  }
 
-export default { getValues, setValues }
+ const getAward = (id) => {
+    return Award[id]
+ }
+
+export default { getValues, setValues, getAward }
