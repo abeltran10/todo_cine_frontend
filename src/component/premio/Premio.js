@@ -12,7 +12,7 @@ const Premio = ({ganador}) => {
 
 
   const handleLoadMovieDetail = async (id) => {
-    navigate(`/moviedetail/${id}`)
+    navigate(`/app/moviedetail/${id}`)
 }
 
   const releaseDate = `(${ganador.release_date.substring(0, ganador.release_date.indexOf("-"))})`

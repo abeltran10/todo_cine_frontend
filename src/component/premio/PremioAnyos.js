@@ -10,7 +10,7 @@ const PremioAnyos = ({premioCod, premioAnyo}) => {
    const navigate = useNavigate()
 
    const handleLoadPremio = async (premioCod, premioAnyo) => {
-        navigate(`/premio/${premioCod}/anyo/${premioAnyo}`)
+        navigate(`/app/premio/${premioCod}/anyo/${premioAnyo}`)
    }
    
    

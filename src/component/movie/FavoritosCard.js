@@ -22,7 +22,7 @@ const FavoritosCard = ({movie, pagina, updateVista}) => {
   }
 
   const handleLoadMovieDetail = async (id) => {
-    navigate(`/moviedetail/${id}`)
+    navigate(`/app/moviedetail/${id}`)
   }
 
   const releaseDate = movie.release_date ? `(${movie.release_date.substring(0, movie.release_date.indexOf("-"))})` : ''

@@ -20,7 +20,7 @@ const NavigationBar = ({user, setErrorMessage}) => {
         window.localStorage.removeItem('loggedUserToken')
         window.localStorage.removeItem('loggedUser')
 
-        navigate(`/`)
+        navigate(`/app/`)
 
     } catch(exception) {
         setErrorMessage('Error al abandonar la sesión')
@@ -30,21 +30,21 @@ const NavigationBar = ({user, setErrorMessage}) => {
   } 
 
   const handleLoadCartelera = (region) => {
-      navigate(`/region/${region}`)
+      navigate(`/app/region/${region}`)
   }
 
   const handleShowPremio = (premioId) => {
-    navigate(`/premio/${premioId}`)
+    navigate(`/app/premio/${premioId}`)
 
   }
 
 
   const handleLoadFavoritos = () => {
-    navigate(`/favoritos`)
+    navigate(`/app/favoritos`)
   }
 
   const loadProfile = () => {
-    navigate(`/profile`)
+    navigate(`/app/profile`)
   }
 
   const loggedIn = () => {

@@ -19,7 +19,7 @@ const App = () => {
   return (
     <Routes>
        <Route
-        path="/"
+        path="/app/"
         element={
           <PublicRoute>
             <LoginFormContainer />
@@ -27,7 +27,7 @@ const App = () => {
         }
       />
       <Route
-        path="/home"
+        path="/app/home"
         element={
           <PrivateRoute>
             <HomeContainer />
@@ -35,7 +35,7 @@ const App = () => {
         }
       />
       <Route
-        path="/profile"
+        path="/app/profile"
         element={
           <PrivateRoute>
             <ProfileContainer />
@@ -43,7 +43,7 @@ const App = () => {
         }
       />
       <Route
-        path="/premio/:premioId"
+        path="/app/premio/:premioId"
         element={
           <PrivateRoute>
             <PremioAnyosContainer />
@@ -51,7 +51,7 @@ const App = () => {
         }
       />
       <Route
-        path="/premio/:premioCod/anyo/:premioAnyo"
+        path="/app/premio/:premioCod/anyo/:premioAnyo"
         element={
           <PrivateRoute>
             <PremioContainer />
@@ -59,7 +59,7 @@ const App = () => {
         }
       />
       <Route
-        path="/moviedetail/:movieId"
+        path="/app/moviedetail/:movieId"
         element={
           <PrivateRoute>
             <MovieDetailContainer />
@@ -67,7 +67,7 @@ const App = () => {
         }
       />
       <Route
-        path="/favoritos"
+        path="/app/favoritos"
         element={
           <PrivateRoute>
             <FavoritosContainer />
@@ -75,7 +75,7 @@ const App = () => {
         }
       />
       <Route
-        path="/createaccount"
+        path="/app/createaccount"
         element={
           <PrivateRoute>
             <CreateAccountContainer />
@@ -83,7 +83,7 @@ const App = () => {
         }
       />
       <Route
-        path="/region/:region"
+        path="/app/region/:region"
         element={
           <PrivateRoute>
             <CarteleraContainer />

@@ -23,7 +23,7 @@ const LoginFormContainer = () => {
       window.localStorage.setItem('loggedUserToken', response.headers.getAuthorization())
       window.localStorage.setItem('loggedUser', JSON.stringify(response.data))
       console.log(response.data)
-      navigate('/home', {
+      navigate('/app/home', {
         state: { successMessage: 'Inicio de sesión exitoso' }
       })
 
@@ -35,7 +35,7 @@ const LoginFormContainer = () => {
   }
 
   const crearCuenta = () => {
-    navigate(`/createaccount`)
+    navigate(`/app/createaccount`)
   }
 
   return (<div>
