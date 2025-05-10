@@ -18,78 +18,60 @@ const App = () => {
   
   return (
     <Routes>
-       <Route
-        path="/app/"
-        element={
+       <Route path="/app/" element={
           <PublicRoute>
             <LoginFormContainer />
           </PublicRoute>
-        }
-      />
-      <Route
-        path="/app/home"
-        element={
+        }/>
+      
+      <Route path="/app/home" element={
           <PrivateRoute>
             <HomeContainer />
           </PrivateRoute>
-        }
-      />
+        }/>
+      
       <Route
-        path="/app/profile"
-        element={
+        path="/app/profile" element={
           <PrivateRoute>
             <ProfileContainer />
           </PrivateRoute>
-        }
-      />
-      <Route
-        path="/app/premio/:premioId"
-        element={
+        }/>
+      
+      <Route path="/app/premio/:premioId" element={
           <PrivateRoute>
             <PremioAnyosContainer />
           </PrivateRoute>
-        }
-      />
-      <Route
-        path="/app/premio/:premioCod/anyo/:premioAnyo"
-        element={
+        }/>
+      
+      <Route path="/app/premio/:premioCod/anyo/:premioAnyo" element={
           <PrivateRoute>
             <PremioContainer />
           </PrivateRoute>
-        }
-      />
-      <Route
-        path="/app/moviedetail/:movieId"
-        element={
+        }/>
+      
+      <Route path="/app/moviedetail/:movieId" element={
           <PrivateRoute>
             <MovieDetailContainer />
           </PrivateRoute>
-        }
-      />
-      <Route
-        path="/app/favoritos"
-        element={
+        }/>
+      
+      <Route path="/app/favoritos" element={
           <PrivateRoute>
             <FavoritosContainer />
           </PrivateRoute>
-        }
-      />
-      <Route
-        path="/app/createaccount"
-        element={
+        }/>
+      
+      <Route path="/app/createaccount" element={
           <PrivateRoute>
             <CreateAccountContainer />
           </PrivateRoute>
-        }
-      />
-      <Route
-        path="/app/region/:region"
-        element={
+        }/>
+      
+      <Route path="/app/region/:region" element={
           <PrivateRoute>
             <CarteleraContainer />
           </PrivateRoute>
-        }
-      />
+        }/>
       
     </Routes>
   )

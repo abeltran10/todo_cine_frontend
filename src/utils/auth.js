@@ -1,24 +1,21 @@
 import userService from '../service/user'
 
-const isTokenValid = () => {
+const isTokenValid = async () => {
     const loggedUser = window.localStorage.getItem('loggedUser')
-    
-    if (loggedUser) {
-        const user = JSON.parse(loggedUser)
-        console.log(user)
-        const response = userService.getUser(user.id)
-        
-        response.then(response => {
-                window.localStorage.setItem('loggedUser', JSON.stringify(response))
-            }).catch(error => {
-                window.localStorage.removeItem('loggedUserToken')
-                window.localStorage.removeItem('loggedUser')
-            })   
-            
+  
+    if (!loggedUser) return false
+  
+    const user = JSON.parse(loggedUser)
+  
+    try {
+      const response = await userService.getUser(user.id)
+      window.localStorage.setItem('loggedUser', JSON.stringify(response))
+      return true
+    } catch (error) {
+      window.localStorage.removeItem('loggedUserToken')
+      window.localStorage.removeItem('loggedUser')
+      return false
     }
-    
-    return window.localStorage.getItem('loggedUser') != null
   }
-
-
+  
   export default isTokenValid

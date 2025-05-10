@@ -2,13 +2,13 @@ import axios from 'axios'
 const baseUrl = '/app/usuario'
 
 
-const getUser = (id) => {
+const getUser = async(id) => {
   const config = {
       headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
     }
 
-  const response = axios.get(`${baseUrl}/${id}`, config)
-  return response.then(response => response.data)  
+  const response = await axios.get(`${baseUrl}/${id}`, config)
+  return response.data  
 }
 
 const getByName = (name) => {
