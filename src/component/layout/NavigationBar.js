@@ -54,7 +54,7 @@ const NavigationBar = ({user, setErrorMessage}) => {
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
               <Nav>
-                <Nav.Link href=".">Home</Nav.Link>{'  '}
+                <Nav.Link href="/app/">Home</Nav.Link>{'  '}
                 <NavDropdown title="Cartelera" id="navbarScrollingDropdown">
                   {Regions.getValues().map(k => <NavDropdown.Item key={k[0]} onClick={() => handleLoadCartelera(k[1])}>{k[2]}</NavDropdown.Item>)}
                 </NavDropdown>
