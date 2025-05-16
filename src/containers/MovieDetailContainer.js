@@ -37,7 +37,7 @@ const MovieDetailContainer = () => {
 
      const addFavoritos = async (movie) => {    
         try {
-          const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: movie.vista, favoritos: true, voto: movie.voto}  
+          const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: false, favoritos: true, voto: null}  
     
           const response = await usuarioMovieService.updateUsuarioMovie(usuario.id, movie.id, usuarioMovie)
           setMovieDetail(response)
@@ -53,7 +53,7 @@ const MovieDetailContainer = () => {
 
       const removeFavoritos = async (movie) => {    
           try {
-            const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: movie.vista, favoritos: false, voto: movie.voto} 
+            const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: false, favoritos: false, voto: null} 
       
             const response = await usuarioMovieService.updateUsuarioMovie(usuario.id, movie.id, usuarioMovie)
             setMovieDetail(response)
@@ -70,8 +70,8 @@ const MovieDetailContainer = () => {
         const addVote = async (movie, rating) => {
             try {
               const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: movie.vista, favoritos: movie.favoritos, voto: rating} 
-        
-              const response = await usuarioMovieService.updateUsuarioMovie(usuario.id, movie.id, usuarioMovie)
+              const  response = await usuarioMovieService.updateUsuarioMovie(usuario.id, movie.id, usuarioMovie)
+                            
               setMovieDetail(response)
             } catch (error) {
               setErrorMessage(error.response.data.message)

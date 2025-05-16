@@ -47,37 +47,30 @@ const NavigationBar = ({user, setErrorMessage}) => {
     navigate(`/app/profile`)
   }
 
-  const loggedIn = () => {
-    return (
-          <Navbar className="bg-body-tertiary">
-              <Container>
-                <Navbar.Brand href=".">Todo Cine</Navbar.Brand>
-                <Navbar.Toggle />
-                <Navbar.Collapse className="justify-content-end">
-                  <Nav>
-                    <Nav.Link href=".">Home</Nav.Link>{'  '}
-                    <NavDropdown title="Cartelera" id="navbarScrollingDropdown">
-                      {Regions.getValues().map(k => <NavDropdown.Item key={k[0]} onClick={() => handleLoadCartelera(k[1])}>{k[2]}</NavDropdown.Item>)}
-                    </NavDropdown>
-                    <NavDropdown title="Premios" id="navbarScrollingDropdown">
-                      {Awards.getValues().map(item => <NavDropdown.Item key={item[0]} onClick={() => handleShowPremio(item[0])}>{item[1]}</NavDropdown.Item>)}
-                    </NavDropdown>     
-                    <NavDropdown title={`Signed as ${user.username}`} id="navbarScrollingDropdown">
-                      <NavDropdown.Item href="#profile" onClick={loadProfile}>Perfil</NavDropdown.Item>
-                      <NavDropdown.Item href="#fav" onClick={handleLoadFavoritos}>Favoritos</NavDropdown.Item>
-                      <NavDropdown.Item href="#logout" onClick={logout}>Log out</NavDropdown.Item>
-                    </NavDropdown>
-                </Nav>
-                </Navbar.Collapse>
-              </Container>
-            </Navbar>
-    )
-  }
-
   return (
-          loggedIn()
-       
-    )
+      <Navbar className="bg-body-tertiary">
+          <Container>
+            <Navbar.Brand href=".">Todo Cine</Navbar.Brand>
+            <Navbar.Toggle />
+            <Navbar.Collapse className="justify-content-end">
+              <Nav>
+                <Nav.Link href=".">Home</Nav.Link>{'  '}
+                <NavDropdown title="Cartelera" id="navbarScrollingDropdown">
+                  {Regions.getValues().map(k => <NavDropdown.Item key={k[0]} onClick={() => handleLoadCartelera(k[1])}>{k[2]}</NavDropdown.Item>)}
+                </NavDropdown>
+                <NavDropdown title="Premios" id="navbarScrollingDropdown">
+                  {Awards.getValues().map(item => <NavDropdown.Item key={item[0]} onClick={() => handleShowPremio(item[0])}>{item[1]}</NavDropdown.Item>)}
+                </NavDropdown>     
+                <NavDropdown title={`Signed as ${user.username}`} id="navbarScrollingDropdown">
+                  <NavDropdown.Item href="#profile" onClick={loadProfile}>Perfil</NavDropdown.Item>
+                  <NavDropdown.Item href="#fav" onClick={handleLoadFavoritos}>Favoritos</NavDropdown.Item>
+                  <NavDropdown.Item href="#logout" onClick={logout}>Log out</NavDropdown.Item>
+                </NavDropdown>
+            </Nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+  )
 }
 
 export default NavigationBar

@@ -49,7 +49,7 @@ const FavoritosContainer = () => {
 
      const updateVista = async (movie, isVista, pagina) => {
         try {
-          const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: isVista, favoritos: movie.favoritos, voto: movie.voto} 
+          const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: isVista, favoritos: movie.favoritos, voto: null} 
     
           await usuarioMovieService.updateUsuarioMovie(usuario.id, movie.id, usuarioMovie)
           await loadUserFavs(usuario.id, pagina)
