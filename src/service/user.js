@@ -36,12 +36,12 @@ const updateUser = async user => {
   return response.data
 }
 
-const getUserFavs = async (userId, pagina) => {
+const getUserMovies = async (userId, vista, pagina) => {
   const config = {
       headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
     }
 
-  const response =  await axios.get(`${baseUrl}/${userId}/movie?page=${pagina}`, config)
+  const response =  await axios.get(`${baseUrl}/${userId}/movie?vista=${vista}&page=${pagina}`, config)
   return response.data
 }
 
@@ -65,4 +65,4 @@ const removeFavs = async (userId, movieId) => {
  
 
 
-export default { getUser, getByName, createUser, updateUser, getUserFavs, addFavs, removeFavs }
+export default { getUser, getByName, createUser, updateUser, getUserMovies, addFavs, removeFavs }

@@ -5,7 +5,7 @@ import CardGroup from 'react-bootstrap/CardGroup'
 import Card  from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container';
 
-import FavoritosCard from '../component/movie/FavoritosCard'
+import FavoritosCard from '../component/favoritos/FavoritosCard'
 import NavigationBar from '../component/layout/NavigationBar';
 import Notification from '../component/common/Notification';
 import Header from '../component/layout/Header';
@@ -14,6 +14,7 @@ import Paginator from '../component/movie/Paginator';
 
 import userService from '../service/user'
 import usuarioMovieService from '../service/usuarioMovie'
+import FavoritosFiltros from '../component/favoritos/FavoritosFiltros';
 
 
 
@@ -27,11 +28,12 @@ const FavoritosContainer = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const [movies, setMovies] = useState(null)
     const [usuario, setUsuario] = useState(user)
+    const [vistaFiltro, setVistaFiltro] = useState('')
 
 
-    const loadUserFavs = async(userId, pagina) => {
+    const loadUserFavs = async({usuarioId, vistaFiltro}, pagina) => {
         try {
-            const pelis = await userService.getUserFavs(userId, pagina)
+            const pelis = await userService.getUserMovies(usuarioId, vistaFiltro, pagina)
             setMovies(pelis) 
         } catch (error) {
             setErrorMessage(error.response.data.message)
@@ -41,8 +43,7 @@ const FavoritosContainer = () => {
     }
 
     useEffect(() => {
-            console.log(usuario)
-            loadUserFavs(usuario.id, 1)
+            loadUserFavs({usuarioId: usuario.id, vistaFiltro}, 1)
         }, [])
 
 
@@ -52,7 +53,7 @@ const FavoritosContainer = () => {
           const usuarioMovie = {usuarioId: usuario.id, movieId: movie.id, vista: isVista, favoritos: movie.favoritos, voto: null} 
     
           await usuarioMovieService.updateUsuarioMovie(usuario.id, movie.id, usuarioMovie)
-          await loadUserFavs(usuario.id, pagina)
+          await loadUserFavs({usuarioId: usuario.id, vistaFiltro}, pagina)
           
           setSuccessMessage(isVista ? 'Película vista' : 'Película no vista')
           setTimeout(() => { setSuccessMessage(null) }, 5000)
@@ -100,13 +101,17 @@ const FavoritosContainer = () => {
       
     }
 
+    const parameters = {usuarioId: usuario.id, vistaFiltro}
+
     return (
         <div>
             <NavigationBar user={usuario} setErrorMessage={setErrorMessage}/>
             <Notification successMessage={successMessage} errorMessage={errorMessage}/>
-            <Header title={title} />            
-            {movies ?  <Container fluid="md">{showGridFavoritos(movies)}</Container> : <></>}
-            {movies ? <Paginator functionSearch={loadUserFavs} param={usuario.id} pageNumbers={movies.total_pages} /> : <></>}
+            <Header title={title} />
+            {movies ? <FavoritosFiltros  usuarioId={usuario.id}  loadUserFavs={loadUserFavs} vistaFiltro={vistaFiltro} setVistaFiltro={setVistaFiltro}/>  : <></>}       
+            {movies ? <Container fluid="md">{showGridFavoritos(movies)}</Container> : <></>}
+            
+            {movies ? <Paginator functionSearch={loadUserFavs} param={parameters} pageNumbers={movies.total_pages} /> : <></> }
         </div>
     )
 
