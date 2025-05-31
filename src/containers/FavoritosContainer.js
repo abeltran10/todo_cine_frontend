@@ -108,7 +108,7 @@ const FavoritosContainer = () => {
             <NavigationBar user={usuario} setErrorMessage={setErrorMessage}/>
             <Notification successMessage={successMessage} errorMessage={errorMessage}/>
             <Header title={title} />
-            {movies ? <FavoritosFiltros  usuarioId={usuario.id}  loadUserFavs={loadUserFavs} vistaFiltro={vistaFiltro} setVistaFiltro={setVistaFiltro}/>  : <></>}       
+            {movies ? <Container fluid="md"><FavoritosFiltros  usuarioId={usuario.id}  loadUserFavs={loadUserFavs} vistaFiltro={vistaFiltro} setVistaFiltro={setVistaFiltro}/></Container>  : <></>}       
             {movies ? <Container fluid="md">{showGridFavoritos(movies)}</Container> : <></>}
             
             {movies ? <Paginator functionSearch={loadUserFavs} param={parameters} pageNumbers={movies.total_pages} /> : <></> }
