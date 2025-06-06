@@ -31,7 +31,7 @@
     "cypress:open": "cypress open"
   },
   "proxy": "http://localhost:8080",
-  "homepage": ".",
+  "homepage": "/app/",
   "eslintConfig": {
     "extends": [
       "react-app",
