@@ -29,11 +29,12 @@ const FavoritosContainer = () => {
     const [movies, setMovies] = useState(null)
     const [usuario, setUsuario] = useState(user)
     const [vistaFiltro, setVistaFiltro] = useState('')
+    const [votadaFiltro, setVotadaFiltro] = useState('')
 
 
-    const loadUserFavs = async({usuarioId, vistaFiltro}, pagina) => {
+    const loadUserFavs = async({usuarioId, vistaFiltro, votadaFiltro}, pagina) => {
         try {
-            const pelis = await userService.getUserMovies(usuarioId, vistaFiltro, pagina)
+            const pelis = await userService.getUserMovies(usuarioId, vistaFiltro, votadaFiltro, pagina)
             setMovies(pelis) 
         } catch (error) {
             setErrorMessage(error.response.data.message)
@@ -43,7 +44,7 @@ const FavoritosContainer = () => {
     }
 
     useEffect(() => {
-            loadUserFavs({usuarioId: usuario.id, vistaFiltro}, 1)
+            loadUserFavs({usuarioId: usuario.id, vistaFiltro, votadaFiltro}, 1)
         }, [])
 
 
@@ -101,14 +102,14 @@ const FavoritosContainer = () => {
       
     }
 
-    const parameters = {usuarioId: usuario.id, vistaFiltro}
+    const parameters = {usuarioId: usuario.id, vistaFiltro, votadaFiltro}
 
     return (
         <div>
             <NavigationBar user={usuario} setErrorMessage={setErrorMessage}/>
             <Notification successMessage={successMessage} errorMessage={errorMessage}/>
             <Header title={title} />
-            {movies ? <Container fluid="md"><FavoritosFiltros  usuarioId={usuario.id}  loadUserFavs={loadUserFavs} vistaFiltro={vistaFiltro} setVistaFiltro={setVistaFiltro}/></Container>  : <></>}       
+            {movies ? <Container fluid="md"><FavoritosFiltros  usuarioId={usuario.id}  loadUserFavs={loadUserFavs} vistaFiltro={vistaFiltro} setVistaFiltro={setVistaFiltro} votadaFiltro={votadaFiltro} setVotadaFiltro={setVotadaFiltro}/></Container>  : <></>}       
             {movies ? <Container fluid="md">{showGridFavoritos(movies)}</Container> : <></>}
             
             {movies ? <Paginator functionSearch={loadUserFavs} param={parameters} pageNumbers={movies.total_pages} /> : <></> }

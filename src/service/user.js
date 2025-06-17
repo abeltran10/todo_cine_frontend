@@ -36,12 +36,12 @@ const updateUser = async user => {
   return response.data
 }
 
-const getUserMovies = async (userId, vista, pagina) => {
+const getUserMovies = async (userId, vista, votada, pagina) => {
   const config = {
       headers: { Authorization: window.localStorage.getItem('loggedUserToken') }
     }
 
-  const response =  await axios.get(`${baseUrl}/${userId}/movie?vista=${vista}&page=${pagina}`, config)
+  const response =  await axios.get(`${baseUrl}/${userId}/movie?vista=${vista}&votada=${votada}&page=${pagina}`, config)
   return response.data
 }
 
